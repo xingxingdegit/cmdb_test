@@ -1,26 +1,66 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for("static",filename="test.css") }}">
     <title> flask test the view </title>
   </head>
   <body>
-    <p>title is {{ title }}</p>
-    <p>title is {{ text }}</p>
+    <br />
+    {% if login %}
+      <p>状态:已登录</p>
+    {% else %}
+      <p>状态:未登录</p>
+    {% endif %}
+    <p>用户:{{ name }}</p>
+    <hr />
     <p>error is {{ error }}</p>
-    <table border='0'>
-      <form name='input' method='post'>
+
+    <table border="0">
+      <form name="input" action="/add" method="post">
       <tr>
-          <th>UserName: </th>
-          <th><input type='text' name='username'></th>
+          <th colspan="2">插入数据</th>
       </tr>
       <tr>
-          <th>Password: </th>
-          <th><input type='text' name='password'></th>
+          <th>title: </th>
+          <th><input type="text" name="title"></th>
       </tr>
       <tr>
-          <th colspan='2'><input type='submit' value='Submit'></th>
+          <th>text: </th>
+          <th><textarea name="text" rows="10" cols="30"></textarea></th>
+      </tr>
+      <tr>
+          <th colspan="2"><input type="submit" value="Submit"></th>
       </tr>
       </form>
     </table>
+    <br>
+    <hr>
+    <h3>删除条目</h3>
+    <form name="del_id" action="/del" method="post">
+        <select name="tid">
+     {% for row in data %}
+            <option value={{ row["tid"] }}>{{ row["tid"] }}</option>
+     {% endfor %}
+        </select>
+        <input type="submit" value="提交">
+    </form>
+    <br>
+    <table border="1">
+      <tr>
+         <th> tid </th>  <th>title</th>  <th>text</th>
+      </tr>
+     {% for row in data %}
+      <tr>
+         <th>{{ row["tid"] }} </th>
+         <th>{{ row["title"].decode("utf-8") }}</th>  <th>{{row["text"].decode("utf-8")}}</th>
+      </tr>
+     {% endfor %}
+    </table> 
+     {% if login %}
+        <p><a href="/logout">登出</a></p>
+     {% else %}
+        <p><a href="/login">登录</a> <a href="/logup">注册</a></p>
+     {% endif %}
   </body>
 </html>

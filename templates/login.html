@@ -4,9 +4,6 @@
     <title> flask test the view </title>
   </head>
   <body>
-    <p>title is {{ title }}</p>
-    <p>title is {{ text }}</p>
-    <p>error is {{ error }}</p>
     <table border='0'>
       <form name='input' method='post'>
       <tr>
@@ -15,12 +12,16 @@
       </tr>
       <tr>
           <th>Password: </th>
-          <th><input type='text' name='password'></th>
+          <th><input type='password' name='password'></th>
       </tr>
       <tr>
           <th colspan='2'><input type='submit' value='Submit'></th>
       </tr>
+      <tr>
+      </tr>
+          <th colspan="2">{{info}}</th>
       </form>
     </table>
+    <p><a href="/">首页</a></p>
   </body>
 </html>

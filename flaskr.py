@@ -1,10 +1,13 @@
 # all the imports
 #--*-- coding:utf-8 --*--
+
 import os
 import psycopg2
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-     render_template, flash
+     render_template, flash,make_response
 from config import *
+import time
+from source import check
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -16,52 +19,114 @@ def before_request():
     g.db = db.connect_db()
 
 @app.teardown_request
-def teardown_request(exception):
+def teardown_request(show_entries):
     g.db.close()
+#def teardown_request(exception):
+@app.route('/static/<filename>')
+def static_(filename):
+    with open('static/' + filename) as fd:
+        return fd.read()
 
 @app.route('/',methods=['GET','POST'])
 def show_entries():
-    if request.method == 'POST':
-        return redirect(url_for('login'))
     try:
         cur = g.db.cursor()
-        cur.execute('select title,text from entries order by id desc')
-#        return str(cur.fetchall())
+        cur.execute('select * from entries')
     except Exception,err:
         return 'error'
-    entries = [dict(title=row[0],text=row[1]) for row in cur.fetchall()]
-    return render_template('show_entries.html', **entries[-1])
+    entries = [dict(tid=row[0],title=row[1],text=row[2]) for row in cur.fetchall()]
+#    if session.get('logged_in'):
+    login = False
+    try:
+        name = request.cookies['name']
+        if session.get(name):
+            login = True
+
+    except KeyError:
+        name = ''
+        
+    data = {'data':entries,'login':login}
+    return render_template('show_entries.html', data=entries,login=login,name=name)
 
 @app.route('/add',methods=['POST'])
 def add_entry():
-    if not session.get('logged_in'):
-        abort(401)
+    if not session.get(request.cookies['name']):
+#        abort(401)
+        return redirect(url_for('login'))
     cur = g.db.cursor()
     cur.execute('insert into entries(title,text) values (%s,%s)',[request.form['title'],request.form['text']])
     g.db.commit()
     flash('New entry was successfully posted')
     return redirect(url_for('show_entries'))
 
+@app.route('/del',methods=['POST'])
+def del_entry():
+    if not session.get(request.cookies['name']):
+        return redirect(url_for('login'))
+    try:
+        cur = g.db.cursor()
+        sql = u"delete from entries where id = %s"
+        cur.execute(sql,request.form['tid'])
+        g.db.commit()
+    except Exception,err:
+        return err.message
+    return redirect(url_for('show_entries'))
+
 @app.route('/login',methods=['GET','POST'])
 def login():
-    error = None
+    info = ''
     if request.method == 'POST':
-        if request.form['username'] not in app.config['USERNAME']:
-#            return str((request.form['username'],app.config['USERNAME'])
-            error = u'用户名错误'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = u'密码错误'
+        username = request.form['username']
+        password = request.form['password']
+        decide,info = check.login(username,password)
+
+        if decide:
+            session[username] = True
+            response = make_response()
+            response.set_cookie('name',username)
+            response.location = url_for('show_entries')
+            response.status_code = 302
+    #            response.set_data(render_template('login.html',error=error))
+            return response
+#            return redirect(url_for('show_entries'))
+    return render_template('login.html',info=info)
+
+@app.route('/logout')
+def logout():
+    session.pop(request.cookies['name'],None)
+    flash('You were logged out')
+    return redirect(url_for('show_entries'))
+
+@app.route('/logup',methods=['GET','POST'])
+def logup():
+    info = ''
+    if request.method == 'POST':
+        if not (request.form['username'] and request.form['password'] and request.form['password_again']):
+            if not request.form['username']:
+                info = u'用户名为空'
+            else:
+                info = u'密码为空'
+        elif request.form['password'] != request.form['password_again']:
+            info = u'密码不匹配'
         else:
-#            session['logged_in'] = True
-#            flash('You were logged in')
-            return redirect(url_for('show_entries'))
-    return render_template('login.html',error=error)
+            dateline = int(time.time())
+            date_str = time.strftime('%Y/%m/%d %H:%M:%S',time.localtime(dateline))
+            data = dict(request.form.items())
+            data['create_date'] = dateline
+            data['create_date_str'] = date_str
+            data['status'] = 'ON'
+            sql = r"insert into dm_user(username,password,section,phone,email,create_date,create_date_str,status)values(%(username)s,%(password)s,%(section)s,%(phone)s,%(email)s,%(create_date)s,%(create_date_str)s,%(status)s)"
+            try:
+                cur = g.db.cursor()
+                cur.execute(sql,data)
+                g.db.commit()
+            except Exception,err:
+                if 'already exists' in err.message:
+                    info = u'用户已存在'
+            else: 
+                info = data["username"] + u'创建成功'
 
-
-
-
-
-
+    return render_template('logup.html',info=info)
 
 if __name__ == '__main__':
     app.run('0.0.0.0',8000)

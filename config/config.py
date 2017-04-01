@@ -4,7 +4,9 @@ DBNAME = 'dms'
 DBUSER = 'dbuser'
 DBPASSWORD = 'abcdefg'
 
-DEBUG = True,
-SECRET_KEY = 'development key',
-USERNAME = 'admin',
-PASSWORD = 'default'
+error_log = '/var/log/dms/error.log'
+
+DEBUG = True
+SECRET_KEY = 'development key'
+#USERNAME = 'admin','star','sst'
+#PASSWORD = 'default'
