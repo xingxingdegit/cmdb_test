@@ -3,23 +3,41 @@
   <head>
     <meta charset="utf-8">
     <title> 机房框架 </title>
-    <link rel="stylesheet" href="static/test.css">
+    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
   </head>
 
   <body>
-    <table>
+    <div class="midd_container_left">
+    <table class="midd_table" border="1">
       <tr>
         <th>ID</th> <th>机房编号</th> <th>详细地址</th> <th>管理员</th> <th>电话</th> <th>主机数量</th>
       </tr>
+      <form name"op_host" action="motor" method="post">
+      <tr class="midd_input">
+        <td></td>
+        <td><input type="text" name="motor"</td>
+        <td><input type="text" name="address"</td>
+        <td><input type="text" name="admin"</td>
+        <td><input type="text" name="phone"</td>
+        <td><input type="submit" value="Add"</td>
+      </tr>
+      </form>
       {% for row in motor_item %}
       <tr>
         <th>{{ row['id'] }}</th>
-        <th>{{ row['motor'] }} </th>
-        <th>{{ row['address'] }}</th>
-        <th>{{ row['admin'] }}</th>
+        <th>{{ row['motor'].decode('utf-8') }} </th>
+        <th>{{ row['address'].decode('utf-8') }}</th>
+        <th>{{ row['admin'].decode('utf-8') }}</th>
         <th>{{ row['phone'] }}</th>     
         <th>{{ row['number'] }}</th>
       </tr>
+      {% endfor %}
     </table>
+   </div>
+   <div class="midd_container_right">
+   <p> {{ info }}</p>
+   <p width="1em">{{ motor }}<p>
+   </div>
+   
   </body>
 </html>

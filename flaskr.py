@@ -33,7 +33,8 @@ def static_(filename):
 def index():
     name = request.cookies.get('name')
     if check.check_login(name,session):
-        return render_template('index.html',username=name,status=u'已登录')
+        frame_id = request.args.get('frame_id')
+        return render_template('index.html',username=name,status=u'已登录',frame_id=frame_id)
     return redirect(url_for('login'))
         
 @app.route('/host',methods=['GET','POST'])
@@ -49,22 +50,40 @@ def host():
         except Exception,err:
             return err.message
         else:
-            entries = [dict(hid=row[0],hostname=row[1],ip=[ip for ip in row[2:8] if ip.strip()],item=row[8],status=row[9],service=row[10],admin=row[11],phone=row[12]) for row in cur.fetchall()]
+            host_item = [dict(hid=row[0],hostname=row[1],ip=[ip for ip in row[2:8] if ip.strip()],item=row[8],status=row[9],service=row[10],admin=row[11],phone=row[12]) for row in cur.fetchall()]
 #            abort(401)
-            return render_template('host.html', data=entries)
+            return render_template('host.html', host_item=host_item)
     else:
         pass
 
-@app.route('/add',methods=['POST'])
-def add_entry():
-    if not session.get(request.cookies['name']):
-#        abort(401)
+@app.route('/motor',methods=['GET','POST'])
+def motor():
+    name = request.cookies.get('name')
+    if not check.check_login(name,session):
         return redirect(url_for('login'))
-    cur = g.db.cursor()
-    cur.execute('insert into entries(title,text) values (%s,%s)',[request.form['title'],request.form['text']])
-    g.db.commit()
-    flash('New entry was successfully posted')
-    return redirect(url_for('show_entries'))
+    if request.method == 'GET':
+        try:
+            cur = g.db.cursor()
+            cur.execute('select id,motor,address,admin,phone from dm_motor limit 100')
+        except Exception,err:
+            g.db.close()
+        else:
+            motor_item = [dict(id=row[0],motor=row[1],address=row[2],admin=row[3],phone=row[4]) for row in cur.fetchall()]
+            return render_template('motor.html', motor_item=motor_item)
+    else:
+        try:
+            cur = g.db.cursor()
+            sql = r"insert into dm_motor(motor,address,admin,phone)values(%(motor)s,%(address)s,%(admin)s,%(phone)s)"
+            cur.execute(sql,request.form)
+            g.db.commit()
+        except Exception,err:
+            info = err.message
+            if 'already exists' in err.message:
+                info = u'机房已存在'
+        else: info = u'创建成功'
+      #  return redirect(url_for('motor'))
+        return render_template('motor.html',info=info,motor=request.form.get('motor'))
+
 
 @app.route('/del',methods=['POST'])
 def del_entry():

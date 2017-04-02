@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title> 这是学习用的测试页面</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='test.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}">
   </head>
 
   <body>
@@ -37,13 +37,13 @@
       </div>
     </div>
     <div class="container_left">
-      <p><a href="host" target="show">主机管理</a></p><br>
-      <p><a href="motor" target="show">机房管理</a></p><br>
-      <p><a href="user" target="show">用户管理</a></p><br>
-      <p><a href="host_del" target="show">已删除主机</a></p>
+      <p><a href="?frame_id=host">主机管理</a></p><br>
+      <p><a href="?frame_id=motor">机房管理</a></p><br>
+      <p><a href="?frame_id=user">用户管理</a></p><br>
+      <p><a href="?frame_id=host_del">已删除主机</a></p>
     </div>
     <div class="container_middle">
-      <iframe scrolling="no" name="show" frameborder="0" src="host">您的浏览器不支持框架</iframe>
+      <iframe scrolling="no" name="show" frameborder="0" src="{{ frame_id or "host" }}">您的浏览器不支持框架</iframe>
     </div>
 
 
