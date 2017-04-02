@@ -3,8 +3,11 @@
 #
 from config import db
 
-def check_status():
-    pass
+def check_login(name,session):
+    if name:
+        if session.get(name):
+            return True
+    return False
 
 def login(username,password):
     info = u'登录成功'
@@ -15,6 +18,9 @@ def login(username,password):
         cur.execute(sql)
         user_data = cur.fetchone()
     except Exception,err:
+        conn.close()
+        if "does not exist" in err.message:
+            return False,u'用户不存在'
         return False,err.message
     finally:
        conn.close()

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title> 这是学习用的测试页面</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='test.css') }}">
+  </head>
+
+  <body>
+    <div class="all">
+    <div class="container_top">
+      <div class="container_top_left">
+      <table class="table_top_left">
+        <tr>
+          <td class="userinfo">用户: {{ username }}</td>
+          <td class="userinfo"><a class="one" href="/logout"> 退出登录</a></td>
+        </tr>
+        <tr>
+          <td class="userinfo">状态: {{ status }}</td>
+        </tr>
+      </table>
+      </div>
+      <div class="container_top_right" style="float=right">
+        <table class="table_top_right">
+          <form name="search" action="search" method="post">
+          <tr>
+            <td>主机名<input type="checkbox" name="search_item" value="hostname" checked="checked"> </td>
+            <td>IP地址<input type="checkbox" name="search_item" value="ip"></td>
+            <td>项目<input type="checkbox" name="search_item" value="item"></td>
+            <td>机房编号<input type="checkbox" name="search_item" value="motor"></td>
+          </tr>
+          <tr>
+            <td colspan="4"><input class="middle" type="text" name="search_content" cols="35"> <input type="submit" value="搜索"></td>
+          </tr>
+          </form>
+        </table>
+      </div>
+    </div>
+    <div class="container_left">
+      <p><a href="host" target="show">主机管理</a></p><br>
+      <p><a href="motor" target="show">机房管理</a></p><br>
+      <p><a href="user" target="show">用户管理</a></p><br>
+      <p><a href="host_del" target="show">已删除主机</a></p>
+    </div>
+    <div class="container_middle">
+      <iframe scrolling="no" name="show" frameborder="0" src="host">您的浏览器不支持框架</iframe>
+    </div>
+
+
+
+    </div>
+    
+ 
+  </body>
+</html>
+    

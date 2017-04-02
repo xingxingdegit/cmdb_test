@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title> 机房框架 </title>
+    <link rel="stylesheet" href="static/test.css">
+  </head>
+
+  <body>
+    <table>
+      <tr>
+        <th>ID</th> <th>机房编号</th> <th>详细地址</th> <th>管理员</th> <th>电话</th> <th>主机数量</th>
+      </tr>
+      {% for row in motor_item %}
+      <tr>
+        <th>{{ row['id'] }}</th>
+        <th>{{ row['motor'] }} </th>
+        <th>{{ row['address'] }}</th>
+        <th>{{ row['admin'] }}</th>
+        <th>{{ row['phone'] }}</th>     
+        <th>{{ row['number'] }}</th>
+      </tr>
+    </table>
+  </body>
+</html>

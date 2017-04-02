@@ -25,35 +25,28 @@ def teardown_request(show_entries):
 @app.route('/static/<filename>')
 def static_(filename):
     with open('static/' + filename) as fd:
-         resp = make_response(fd.read())
-         resp.content_type = 'text/css'
-    return resp
+        return fd.read()
 
-@app.route('/')
-def index():
-    name = request.cookies.get('name')
-    if check.check_login(name,session):
-        return render_template('index.html',username=name,status=u'已登录')
-    return redirect(url_for('login'))
+@app.route('/',methods=['GET','POST'])
+def show_entries():
+    try:
+        cur = g.db.cursor()
+        cur.execute('select * from entries')
+    except Exception,err:
+        return 'error'
+    entries = [dict(tid=row[0],title=row[1],text=row[2]) for row in cur.fetchall()]
+#    if session.get('logged_in'):
+    login = False
+    try:
+        name = request.cookies['name']
+        if session.get(name):
+            login = True
+
+    except KeyError:
+        name = ''
         
-@app.route('/host',methods=['GET','POST'])
-def host():
-    name = request.cookies.get('name')
-    if not check.check_login(name,session):
-        return redirect(url_for('login'))
-    if request.method == 'GET':
-        try:
-            cur = g.db.cursor()
-            cur.execute('select hid,hostname,ip1,ip2,ip3,ip4,ip5,ip6,item,status,service,admin,phone from dm_host limit 100')
-            all_data = cur.fetchall()
-        except Exception,err:
-            return err.message
-        else:
-            entries = [dict(hid=row[0],hostname=row[1],ip=[ip for ip in row[2:8] if ip.strip()],item=row[8],status=row[9],service=row[10],admin=row[11],phone=row[12]) for row in cur.fetchall()]
-#            abort(401)
-            return render_template('host.html', data=entries)
-    else:
-        pass
+    data = {'data':entries,'login':login}
+    return render_template('show_entries.html', data=entries,login=login,name=name)
 
 @app.route('/add',methods=['POST'])
 def add_entry():
@@ -91,7 +84,7 @@ def login():
             session[username] = True
             response = make_response()
             response.set_cookie('name',username)
-            response.location = url_for('index')
+            response.location = url_for('show_entries')
             response.status_code = 302
     #            response.set_data(render_template('login.html',error=error))
             return response
@@ -102,7 +95,7 @@ def login():
 def logout():
     session.pop(request.cookies['name'],None)
     flash('You were logged out')
-    return redirect(url_for('login'))
+    return redirect(url_for('show_entries'))
 
 @app.route('/logup',methods=['GET','POST'])
 def logup():
@@ -122,8 +115,7 @@ def logup():
             data['create_date'] = dateline
             data['create_date_str'] = date_str
             data['status'] = 'ON'
-            data['level'] = 1
-            sql = r"insert into dm_user(username,password,section,phone,email,create_date,create_date_str,status,level)values(%(username)s,%(password)s,%(section)s,%(phone)s,%(email)s,%(create_date)s,%(create_date_str)s,%(status)s,%(level)s)"
+            sql = r"insert into dm_user(username,password,section,phone,email,create_date,create_date_str,status)values(%(username)s,%(password)s,%(section)s,%(phone)s,%(email)s,%(create_date)s,%(create_date_str)s,%(status)s)"
             try:
                 cur = g.db.cursor()
                 cur.execute(sql,data)
@@ -131,12 +123,10 @@ def logup():
             except Exception,err:
                 if 'already exists' in err.message:
                     info = u'用户已存在'
-                else: info = err.message
             else: 
                 info = data["username"] + u'创建成功'
 
     return render_template('logup.html',info=info)
 
 if __name__ == '__main__':
-#    app.run('0.0.0.0',8000)
-    app.run()
+    app.run('0.0.0.0',8000)

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title> 主机框架 </title>
+    <link rel="stylesheet" href="static/test.css">
+  </head>
+
+  <body>
+    <table width="100%">
+      <tr>
+        <th>HID</th> <th>主机名</th> <th>Address</th> <th>项目</th> <th>状态</th> <th>服务类型</th> <th>负责人</th> <th>电话</th>
+      </tr>
+      {% for row in host_item %}
+      <tr>
+        <th>{{ row['hid'] }}</th>
+        <th>{{ row['hostname'] }} </th>
+        <th><select>
+            {% for ip in row['ip'] %}
+              <option>{{ ip }}</option>
+            {% endfor %}
+            </select>
+        </th>
+        <th>{{ row['item'] }}</th>
+        <th>{{ row['status'] }}</th>
+        <th>{{ row['service'] }}</th>
+        <th>{{ row['admin'] }}</th>
+        <th>{{ row['phone'] }}</th>     
+      </tr>
+     {% endfor %}
+    </table>
+  </body>
+</html>
