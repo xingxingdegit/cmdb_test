@@ -39,18 +39,14 @@
     <div class="container_left">
       <p><a href="?frame_id=host">主机管理</a></p><br>
       <p><a href="?frame_id=motor">机房管理</a></p><br>
+      <p><a href="?frame_id=cabinet">机柜管理</a></p><br>
       <p><a href="?frame_id=user">用户管理</a></p><br>
-      <p><a href="?frame_id=host_del">已删除主机</a></p>
+      <p><a href="?frame_id=host_del">已删除</a></p>
     </div>
     <div class="container_middle">
-      <iframe scrolling="no" name="show" frameborder="0" src="{{ frame_id or "host" }}">您的浏览器不支持框架</iframe>
+      <iframe name="show" frameborder="0" src="{{ frame_id or "host" }}">您的浏览器不支持框架</iframe>
     </div>
-
-
-
-    </div>
-    
- 
+  </div>
   </body>
 </html>
     

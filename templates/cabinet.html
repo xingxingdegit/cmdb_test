@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title> 机柜框架 </title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+  </head>
+
+  <body>
+    <div class="midd_container_left">
+    <table class="midd_table" border="1">
+      <tr>
+        <th>ID</th> <th>机房编号</th> <th>机柜编号</th> <th>机房中的第几排</th> <th>第几列</th> <th>服务器在机柜中的位置(#u-#u)</th>
+      </tr>
+      <form name"op_host" action="cabinet" method="post">
+      <tr class="midd_container_input">
+        <td></td>
+        <td><input type="text" name="motor"</td>
+        <td><input type="text" name="cabinet"</td>
+        <td><input type="text" name="row"</td>
+        <td><input type="text" name="col"</td>
+        <td><input type="text" name="pos"</td>
+        <td><input type="submit" value="Add"</td>
+      </tr>
+      </form>
+      {% for row in cabinet_item %}
+      <tr>
+        <th>{{ row['id'] }}</th>
+        <th>{{ row['motor'].decode('utf-8') }} </th>
+        <th>{{ row['cabinet'].decode('utf-8') }}</th>
+        <th>{{ row['row'].decode('utf-8') }}</th>
+        <th>{{ row['col'] }}</th>     
+        <th>{{ row['pos'] }}</th>
+      </tr>
+      {% endfor %}
+    </table>
+   </div>
+   <div class="midd_container_right">
+   <p> {{ info }}</p>
+   <p width="1em">{{ cabinet }}<p>
+   </div>
+   
+  </body>
+</html>
