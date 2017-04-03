@@ -18,10 +18,11 @@ iframe              {width:100%;height:800px;}
 .container_middle   {float:left;width:90%;height:1000px;font-size:0.8em;background:url("static/ground.png");}
 
 .midd_container_input {text-align:center;border-style:ridge;border-color:#798df2;background:blue;}
-.midd_container_left {float:left;width:95%;height:900px;font-weight:600;font-size:0.7em;font-family:"宋体",serif,Times;}
-.midd_table         {width:100%;font-weight:600;font-size:0.7em;font-family:"宋体",serif,Times;border-style:ridge;border-color:#798df2;}
-.midd_container_right {float:left;width:1em;word-wrap:break-word;height:900px;text-align:right;font-weight:600;font-size:0.8em;font-family:"宋体",serif,Times;}
+.midd_container_left {float:left;width:100%;height:600px;font-weight:600;font-size:0.7em;font-family:"宋体",serif,Times;}
+.midd_table         {border-collapse:collapse;width:100%;font-weight:600;font-size:1em;font-family:"宋体",serif,Times;border-style:ridge;border-color:#798df2;}
+.midd_container_bottom {float:left;width:200px;height:50px;text-align:right;font-weight:600;font-size:1em;font-family:"宋体",serif,Times;}
 .midd_text_input    {width:130px;}
+.midd_address       {width:120px;}
 
 
 

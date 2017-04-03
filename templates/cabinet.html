@@ -10,7 +10,7 @@
     <div class="midd_container_left">
     <table class="midd_table" border="1">
       <tr>
-        <th>ID</th> <th>机房编号</th> <th>机柜编号</th> <th>机房中的第几排</th> <th>第几列</th> <th>服务器在机柜中的位置(#u-#u)</th>
+        <th>ID</th> <th>机房编号</th> <th>机柜编号</th> <th>机房中的第几排</th> <th>第几列</th> <th>机柜高度(u)</th>
       </tr>
       <form name"op_host" action="cabinet" method="post">
       <tr class="midd_container_input">
@@ -19,7 +19,7 @@
         <td><input type="text" name="cabinet"</td>
         <td><input type="text" name="row"</td>
         <td><input type="text" name="col"</td>
-        <td><input type="text" name="pos"</td>
+        <td><input type="text" name="height"</td>
         <td><input type="submit" value="Add"</td>
       </tr>
       </form>
@@ -29,15 +29,14 @@
         <th>{{ row['motor'].decode('utf-8') }} </th>
         <th>{{ row['cabinet'].decode('utf-8') }}</th>
         <th>{{ row['row'].decode('utf-8') }}</th>
-        <th>{{ row['col'] }}</th>     
-        <th>{{ row['pos'] }}</th>
+        <th>{{ row['col'].decode('utf-8') }}</th>     
+        <th>{{ row['height'] }}</th>
       </tr>
       {% endfor %}
     </table>
    </div>
-   <div class="midd_container_right">
-   <p> {{ info }}</p>
-   <p width="1em">{{ cabinet }}<p>
+   <div class="midd_container_bottom">
+   <p> {{ info }} {{ cabinet }}<p>
    </div>
    
   </body>

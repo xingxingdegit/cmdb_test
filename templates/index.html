@@ -2,8 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title> 这是学习用的测试页面</title>
+    <title> 服务器管理 </title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}">
+    <link rel="icon" href="favicon.png" type="image/x-icon">
   </head>
 
   <body>
@@ -41,11 +42,13 @@
       <p><a href="?frame_id=motor">机房管理</a></p><br>
       <p><a href="?frame_id=cabinet">机柜管理</a></p><br>
       <p><a href="?frame_id=user">用户管理</a></p><br>
-      <p><a href="?frame_id=host_del">已删除</a></p>
+      <p><a href="?frame_id=host_del">已删除</a></p><br>
+      <br><br><br>
     </div>
     <div class="container_middle">
       <iframe name="show" frameborder="0" src="{{ frame_id or "host" }}">您的浏览器不支持框架</iframe>
     </div>
+      <p style="float:bottom"><a href="https://trustlogo.com"><img src="static/comodo.png" alt="comodo ssl"></a></p>
   </div>
   </body>
 </html>

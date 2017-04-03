@@ -45,14 +45,11 @@ def host():
     if request.method == 'GET':
         try:
             cur = g.db.cursor()
-            cur.execute(r'select id,hostname,ip1,ip2,ip3,ip4,ip5,ip6,item,service,port,admin,phone,motor,cabinet,pos_start,pos_end,status from dm_host limit 100')
-            all_data = cur.fetchall()
-            cur.execute(r'select motor,count(*) from dm_host group by motor')
-            motor_host_num = dict(cur.fetchall())
+            cur.execute(r'select id,hostname,ip1,ip2,ip3,ip4,ip5,ip6,item,service,port,admin,phone,motor,cabinet,pos,status from dm_host limit 100')
         except Exception,err:
             return err.message
         else:
-            host_item = [dict(id=row[0],hostname=row[1],ip=[ip for ip in row[2:8] if ip.strip()],item=row[8],service=row[9],port=row[10],admin=row[11],phone=row[12],motor=row[13],cabinet=row[14],pos_start=row[15],pos_end=row[16],status=row[17],num=motor_host_num[row[0]]) for row in all_data]
+            host_item = [dict(id=row[0],hostname=row[1],ip=[ip for ip in row[2:8] if ip and ip.strip()],item=row[8],service=row[9],port=row[10],admin=row[11],phone=row[12],motor=row[13],cabinet=row[14],pos=row[15],status=row[16]) for row in cur.fetchall()]
 #            abort(401)
             return render_template('host.html', host_item=host_item)
     else:
@@ -60,27 +57,27 @@ def host():
             cur = g.db.cursor()
             data = dict(request.form.items())
                 
-            sql = r"insert into dm_host(hostname,item,service,port,admin,phone,motor,cabinet,pos_start,post_end,status"
-            value = u"VALUES(%(hostname)s,%(item)s,%(service)s,%(port)s,%(admin)s,%(phone)s,%(motor)s,%(cabinet)s,%(post_start)s,%(post_end)s,%(status)s"
+            sql = r"insert into dm_host(hostname,item,service,port,admin,phone,motor,cabinet,pos,status"
+            value = u"VALUES(%(hostname)s,%(item)s,%(service)s,%(port)s,%(admin)s,%(phone)s,%(motor)s,%(cabinet)s,%(pos)s,%(status)s"
             for ip,num in zip(data['ip'].split(','),(1,2,3,4,5,6)):
                 col = 'ip{}'.format(num)
                 data[col] = ip
                 sql = sql + (',' + col)
-                value = value + (',' + '%(' + col + '%)s')
+                value = value + (',' + '%(' + col + ')s')
             sql = sql + ')' + value +')'
 
-            cur.execute(sql,request.form)
+            cur.execute(sql,data)
             g.db.commit()
         except Exception,err:
             info = err.message
-            if "does not exist" in info:
-                info = u'机房或机柜不存在'
-            elif 'already exists' in info:
-                info = u'主机已存在'
+            if 'already exists' in info:
+                info = u'主机已存在, 创建失败'
+            elif 'is not present in table' in info:
+                info = u'机房或机柜不存在, 创建失败'
 
         else: info = u'创建成功'
       #  return redirect(url_for('motor'))
-        return render_template('cabinet.html',info=info,motor=request.form.get('cabinet'))
+        return render_template('host.html',info=info,hostname=request.form.get('hostname'))
 
 @app.route('/motor',methods=['GET','POST'])
 def motor():
@@ -91,11 +88,14 @@ def motor():
         try:
             cur = g.db.cursor()
             cur.execute('select id,motor,address,admin,phone from dm_motor limit 100')
+            all_data = cur.fetchall()
+            cur.execute(r'select motor,count(*) from dm_host group by motor')
+            motor_host_num = dict(cur.fetchall())
         except Exception,err:
             g.db.close()
             return err.message
         else:
-            motor_item = [dict(id=row[0],motor=row[1],address=row[2],admin=row[3],phone=row[4]) for row in cur.fetchall()]
+            motor_item = [dict(id=row[0],motor=row[1],address=row[2],admin=row[3],phone=row[4],number=motor_host_num.get(row[1],0)) for row in all_data]
             return render_template('motor.html', motor_item=motor_item)
     else:
         try:
@@ -119,22 +119,22 @@ def cabinet():
     if request.method == 'GET':
         try:
             cur = g.db.cursor()
-            cur.execute('select id,motor,cabinet,row,col,pos from dm_cabinet limit 100')
+            cur.execute('select id,motor,cabinet,row,col,height from dm_cabinet limit 100')
         except Exception,err:
             g.db.close()
             return err.message
         else:
-            cabinet_item = [dict(id=row[0],motor=row[1],cabinet=row[2],row=row[3],col=row[4],pos=row[5]) for row in cur.fetchall()]
+            cabinet_item = [dict(id=row[0],motor=row[1],cabinet=row[2],row=row[3],col=row[4],height=row[5]) for row in cur.fetchall()]
             return render_template('cabinet.html', cabinet_item=cabinet_item)
     else:
         try:
             cur = g.db.cursor()
-            sql = r"insert into dm_cabinet(motor,cabinet,row,col,pos)values(%(motor)s,%(cabinet)s,%(row)s,%(col)s,%(pos)s)"
+            sql = r"insert into dm_cabinet(motor,cabinet,row,col,height)values(%(motor)s,%(cabinet)s,%(row)s,%(col)s,%(height)s)"
             cur.execute(sql,request.form)
             g.db.commit()
         except Exception,err:
             info = err.message
-            if "does not exist" in info:
+            if "is not present in table" in info:
                 info = u'机房不存在'
             elif 'already exists' in info:
                 info = u'机房中此机柜已存在'

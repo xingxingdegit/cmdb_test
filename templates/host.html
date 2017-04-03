@@ -10,47 +10,52 @@
     <div class="midd_container_left">
     <table class="midd_table" border="1">
       <tr>
-        <th>ID</th> <th>主机名</th> <th>Address</th> <th>项目</th> <th>状态</th> <th>机房编号</th> <th>机柜编号</th> <th>机柜中的位置</th> <th>服务类型</th> <th>负责人</th> <th>电话</th>
+        <th>ID</th> <th>主机名</th> <th>Address</th> <th>项目</th> <th>服务</th> <th>端口</th> <th>负责人</th> <th>电话</th> <th>机房</th> <th>机柜</th> <th>位置(u-u)</th> <th>状态</th>
       </tr>
-      <form name"op_host" action="motor" method="post">
+      <form name"op_host" action="host" method="post">
       <tr class="midd_container_input">
         <td></td>
         <td><input class="midd_text_input" type="text" name="hostname"</td>
         <td><input class="midd_text_input"  type="text" name="ip"</td>
         <td><input class="midd_text_input" type="text" name="item"</td>
-        <td><input class="midd_text_input" type="text" name="status"</td>
+        <td><input class="midd_text_input" type="text" name="service"</td>
+        <td><input class="midd_text_input" type="text" name="port"</td>
+        <td><input class="midd_text_input" type="text" name="admin"</td>
+        <td><input class="midd_text_input" type="text" name="phone"</td>
         <td><input class="midd_text_input" type="text" name="motor"</td>
         <td><input class="midd_text_input" type="text" name="cabinet"</td>
         <td><input class="midd_text_input" type="text" name="pos"</td>
-        <td><input class="midd_text_input" type="text" name="service"</td>
-        <td><input class="midd_text_input" type="text" name="admin"</td>
-        <td><input class="midd_text_input" type="text" name="phone"</td>
+        <td><input class="midd_text_input" type="text" name="status"</td>
         <td><input type="submit" value="Add"</td>
       </tr>
       </form>
 
       {% for row in host_item %}
       <tr>
-        <th>{{ row['hid'] }}</th>
+        <th>{{ row['id'] }}</th>
         <th>{{ row['hostname'] }} </th>
-        <th><select>
+        <th><select class="midd_address">
             {% for ip in row['ip'] %}
               <option>{{ ip }}</option>
             {% endfor %}
             </select>
         </th>
-        <th>{{ row['item'] }}</th>
-        <th>{{ row['status'] }}</th>
-        <th>{{ row['service'] }}</th>
-        <th>{{ row['admin'] }}</th>
-        <th>{{ row['phone'] }}</th>     
+        <th>{{ row['item'].decode('utf-8') }}</th>
+        <th>{{ row['service'].decode('utf-8') }}</th>
+        <th>{{ row['port'].decode('utf-8') }}</th>
+        <th>{{ row['admin'].decode('utf-8') }}</th>
+        <th>{{ row['phone'].decode('utf-8') }}</th>     
+        <th>{{ row['motor'].decode('utf-8') }}</th>     
+        <th>{{ row['cabinet'].decode('utf-8') }}</th>     
+        <th>{{ row['pos'].decode('utf-8') }}</th>     
+        <th>{{ row['status'].decode('utf-8') }}</th>
       </tr>
      {% endfor %}
     </table>
     </div>
-    <div class="midd_container_right">
+    <div class="midd_container_bottom">
       <p> {{ info }}</p>
-      <p width="1em">{{ motor }}<p>
+      <p width="1em">{{ hostname }}<p>
     </div>
 
   </body>
