@@ -1,18 +1,27 @@
 #!/usr/bin/env python
 #--*-- coding:utf-8 --*--
 #
-from config import db
+import time
+from config import config
 
-def check_login(name,session):
+def check_login(name,conn,ip):
     if name:
-        if session.get(name):
-            return True
+       pre = config.PREFIX
+       nowtime = int(time.time())
+       user_data = conn.hgetall(pre+name)
+       try:
+           if user_data['action'] == 'online':
+               if (nowtime - int(user_data.get('lasttime'))) <= 1800:
+                   if user_data['lastip'] == ip:
+                       conn.hset(name,'lasttime',nowtime)
+                       return True
+       except:
+           return False
     return False
 
-def login(username,password):
+def login(username,password,conn):
     info = u'登录成功'
     try:
-        conn = db.connect_db()
         cur = conn.cursor()
         sql = r"select username,password,status from dm_user WHERE username = '%s'" % username
         cur.execute(sql)

@@ -1,8 +1,7 @@
 # all the imports
 #--*-- coding:utf-8 --*--
 
-import os
-import psycopg2
+#import os
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash,make_response
 from config import *
@@ -17,9 +16,10 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 @app.before_request
 def before_request():
     g.db = db.connect_db()
+    g.redis = db.connect_redis()
 
 @app.teardown_request
-def teardown_request(show_entries):
+def teardown_request(exception):
     g.db.close()
 #def teardown_request(exception):
 @app.route('/static/<filename>')
@@ -32,7 +32,7 @@ def static_(filename):
 @app.route('/')
 def index():
     name = request.cookies.get('name')
-    if check.check_login(name,session):
+    if check.check_login(name,g.redis,request.remote_addr):
         frame_id = request.args.get('frame_id')
         return render_template('index.html',username=name,status=u'已登录',frame_id=frame_id)
     return redirect(url_for('login'))
@@ -40,7 +40,7 @@ def index():
 @app.route('/host',methods=['GET','POST'])
 def host():
     name = request.cookies.get('name')
-    if not check.check_login(name,session):
+    if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
     if request.method == 'GET':
         try:
@@ -82,7 +82,7 @@ def host():
 @app.route('/motor',methods=['GET','POST'])
 def motor():
     name = request.cookies.get('name')
-    if not check.check_login(name,session):
+    if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
     if request.method == 'GET':
         try:
@@ -114,7 +114,7 @@ def motor():
 @app.route('/cabinet',methods=['GET','POST'])
 def cabinet():
     name = request.cookies.get('name')
-    if not check.check_login(name,session):
+    if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
     if request.method == 'GET':
         try:
@@ -162,22 +162,30 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        decide,info = check.login(username,password)
+        decide,info = check.login(username,password,g.db)
 
         if decide:
-            session[username] = True
+            nowtime = int(time.time())
+            ip = request.remote_addr
+            try:
+                pre = app.config['PREFIX']
+                g.redis.hmset(pre + username,{'action':'online','lasttime':nowtime,'lastip':ip})
+            except Exception,err:
+                return err.message
+            
             response = make_response()
             response.set_cookie('name',username)
             response.location = url_for('index')
             response.status_code = 302
-    #            response.set_data(render_template('login.html',error=error))
             return response
-#            return redirect(url_for('show_entries'))
     return render_template('login.html',info=info)
 
 @app.route('/logout')
 def logout():
-    session.pop(request.cookies['name'],None)
+    pre = app.config['PREFIX']
+    username = request.cookies.get('name')
+    g.redis.hset(pre+username,'action','offline')
+    
     flash('You were logged out')
     return redirect(url_for('login'))
 
@@ -215,5 +223,5 @@ def logup():
     return render_template('logup.html',info=info)
 
 if __name__ == '__main__':
-#    app.run('0.0.0.0',8000)
-    app.run()
+    app.run('0.0.0.0',8000)
+#    app.run()

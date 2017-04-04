@@ -2,16 +2,22 @@
 #
 import psycopg2
 from config import *
+import redis
 #from contextlib import closing
 
-dm_user = r'create table dm_user(id serial PRIMARY KEY,username char(30) NOT NULL UNIQUE, password varchar(50) NOT NULL,section char(20),phone char(20),email char(50),create_date int,create_date_str char(30),status char(3),offtime int,level int NOT NULL)'
+dm_user = r'create table dm_user(uid serial PRIMARY KEY,username char(30) NOT NULL UNIQUE, password varchar(50) NOT NULL,section char(20),phone char(20),email char(50),create_date int,create_date_str char(30),status char(3),offtime int,level int NOT NULL,head_portrait varchar(150)'
+dm_user_notify = r'create table dm_notify(uid int REFERENCES dm_user (uid),notify varchar(255),date int,date_str char(30),status char(6))'
 dm_motor = r'create table dm_motor(id serial PRIMARY KEY,motor char(30) NOT NULL UNIQUE,address varchar(100),admin char(15),phone char(20))'
 dm_cabinet = r'create table dm_cabinet(id serial PRIMARY KEY,motor char(30) REFERENCES dm_motor (motor),cabinet char(30) NOT NULL,row char(10),col char(10),height char(2),UNIQUE (motor,cabinet))'
-dm_host = r'create table dm_host(id serial PRIMARY KEY,hostname char(20) NOT NULL UNIQUE,ip1 char(20),ip2 char(20),ip3 char(20),ip4 char(20),ip5 varchar(20),ip6 varchar(20),item char(20),service char(30),port char(20),admin char(15),phone char(20),motor char(30),cabinet char(30),pos char(10),status char(10),FOREIGN KEY (motor,cabinet) REFERENCES dm_cabinet (motor,cabinet))'
+
+dm_host = r'create table dm_host(id int PRIMARY KEY,hostname char(20) NOT NULL UNIQUE,service_ip char(15),service_mac char(17),data_ip char(15),data_mac char(17),monitor_ip char(15),monitor_mac char(17),rest_ip char(60),idrac_ip char(15),idrac_mac char(17),memory char(10),disk char(10),cpu char(20),server_model char(20),system char(20),bios_version char(20),board_model char(20),board_serial char(20),item char(20),service char(30),port char(20),admin char(15),phone char(20),motor char(30),cabinet char(30),pos char(10),status char(10),FOREIGN KEY (motor,cabinet) REFERENCES dm_cabinet (motor,cabinet))'
 
 def connect_db():
     return psycopg2.connect(host=DBHOST,dbname=DBNAME,user=DBUSER, \
            password=DBPASSWORD,port=DBPORT)
+
+def connect_redis():
+    return redis.Redis(REDIS_HOST,REDIS_PORT)
 
 def init_db():
     conn = connect_db()
