@@ -8,36 +8,54 @@
 
   <body>
     <div class="midd_container_left">
+    <table>
+      <tr>
+      <form name="search_host" action="search" method="get">
+        <td>机房编号</td><td><input type="text" name="motor"></td>
+        <td>机柜编号</td><td><input type="text" name="cabinet"></td>
+        <td>机柜高度</td><td><input type="text" name="height"></td>
+        <td rowspan='1'><input type="submit" value="搜索">
+      </form>
+
+        <td><a href='/static/cabinet.html' target="_self"> <input type="button" value="创建机柜"></a>
+        <td><input type="button" value="删除机柜">
+      </tr>
     <table class="midd_table" border="1">
       <tr>
-        <th>ID</th> <th>机房编号</th> <th>机柜编号</th> <th>机房中的第几排</th> <th>第几列</th> <th>机柜高度(u)</th>
+        <th>ID</th> <th>机房编号</th> <th>机柜</th> <th>第几排</th> <th>第几列</th><th>高度(u)</th> <th>电话</th> <th>修改时间</th> 
       </tr>
-      <form name"op_host" action="cabinet" method="post">
-      <tr class="midd_container_input">
-        <td></td>
-        <td><input type="text" name="motor"</td>
-        <td><input type="text" name="cabinet"</td>
-        <td><input type="text" name="row"</td>
-        <td><input type="text" name="col"</td>
-        <td><input type="text" name="height"</td>
-        <td><input type="submit" value="Add"</td>
-      </tr>
-      </form>
-      {% for row in cabinet_item %}
+
+      {% for row in motor_item %}
+      <a href="/cabinet/view?mid={{ row['cid'] }}" target="_blank">
       <tr>
-        <th>{{ row['id'] }}</th>
-        <th>{{ row['motor'].decode('utf-8') }} </th>
-        <th>{{ row['cabinet'].decode('utf-8') }}</th>
-        <th>{{ row['row'].decode('utf-8') }}</th>
-        <th>{{ row['col'].decode('utf-8') }}</th>     
-        <th>{{ row['height'] }}</th>
+        <td>{{ row['id'] }}</th>
+        <td>{{ row['motor'].decode('utf-8') }} </th>
+        <td>{{ row['cabinet'].decode('utf-8') }}</th>
+        <td>{{ row['row'].decode('utf-8') }}</th>
+        <td>{{ row['col'].decode('utf-8') }}</th>     
+        <td>{{ row['height'].decode('utf-8') }}</th>     
+        <td>{{ row['date_str'].decode('utf-8') }}</th>
       </tr>
-      {% endfor %}
+      </a>
+     {% endfor %}
     </table>
-   </div>
-   <div class="midd_container_bottom">
-   <p> {{ info }} {{ cabinet }}<p>
-   </div>
-   
+    </div>
+    <div class="midd_container_bottom">
+      <table>
+        <tr>
+        {% for i in range(1,pages+1) %}
+          {% if i > 10 %}
+             <td>...</td><td><input type="text" name="page"></td>
+             <td><input type="submit" value="跳转"></td><td>总共 {{pages}} 页</td>
+          {% endif %}
+          {% if request.args.get('page') == i %}
+             <a href="cabinet?page={{ i }}" target="_self"><td style="color=#000000">{{i}}</td></a>
+          {% endif %}
+          <a href="cabinet?page={{ i }}" target="_self"><td>{{i}}</td></a>
+        {% endfor %}
+        </tr>
+     </table>
+    </div>
+
   </body>
 </html>

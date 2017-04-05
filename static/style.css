@@ -15,7 +15,7 @@ iframe              {width:100%;height:800px;}
 .table_top_left     {width:70%;height:100%;float:left;text-align:left;}
 
 .container_left     {font-family:"宋体",serif;font-size:20px;float:left;width:10%;height:1000px;background:#f1f2f4;}
-.container_middle   {float:left;width:90%;height:1000px;font-size:0.8em;background:url("static/ground.png");}
+.container_middle   {float:left;width:90%;height:1000px;font-size:0.8em;}
 
 .midd_container_input {text-align:center;border-style:ridge;border-color:#798df2;background:blue;}
 .midd_container_left {float:left;width:100%;height:600px;font-weight:600;font-size:0.7em;font-family:"宋体",serif,Times;}

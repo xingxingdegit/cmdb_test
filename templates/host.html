@@ -8,6 +8,27 @@
 
   <body>
     <div class="midd_container_left">
+    <table>
+      <tr>
+      <form name="search_host" action="search" method="get">
+        <td>服务</td><td><input type="text" name="service"></td>
+        <td>主机名</td><td><input type="text" name="hostname"></td>
+        <td>IP</td><td><input type="text" name="ip"></td>
+        <td rowspan='2'><input type="submit" value="搜索">
+      </form>
+
+        <td rowspan='2'><a href='/static/host.html' target="_self"> <input type="button" value="创建主机"></a>
+        <td rowspan='2'><input type="button" value="删除主机">
+      </tr>
+      <tr>
+        <td>机房编号</td><td><input type="text" name="motor"></td>
+        <td>所属项目</td><td><input type="text" name="item"></td>
+        <td>运行状态</td>  <td>
+        <select name="status">
+          <option value="在线">在线</option>
+          <option value="离线">离线</option>
+          <option value="故障">故障</option>
+        </select> </td>
     <table class="midd_table" border="1">
       <tr>
         <th>ID</th> <th>主机名</th> <th>业务IP</th> <th>数据IP</th> <th>监控IP</th> <th>项目</th> <th>服务</th> <th>系统</th> <th>负责人</th> <th>电话</th> <th>状态</th>

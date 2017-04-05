@@ -8,35 +8,53 @@
 
   <body>
     <div class="midd_container_left">
+    <table>
+      <tr>
+      <form name="search_host" action="search" method="get">
+        <td>机房编号</td><td><input type="text" name="motor"></td>
+        <td>地址</td><td><input type="text" name="address"></td>
+        <td rowspan='2'><input type="submit" value="搜索">
+      </form>
+
+        <td><a href='/static/motor.html' target="_self"> <input type="button" value="创建机房"></a>
+        <td><input type="button" value="删除机房">
+      </tr>
     <table class="midd_table" border="1">
       <tr>
-        <th>ID</th> <th>机房编号</th> <th>详细地址</th> <th>管理员</th> <th>电话</th> <th>主机数量</th>
+        <th>ID</th> <th>机房编号</th> <th>地址</th> <th>负责人</th> <th>电话</th> <th>创建日期</th><th>上次修改日期</th>
       </tr>
-      <form name"op_host" action="motor" method="post">
-      <tr class="midd_container_input">
-        <td></td>
-        <td><input type="text" name="motor"</td>
-        <td><input type="text" name="address"</td>
-        <td><input type="text" name="admin"</td>
-        <td><input type="text" name="phone"</td>
-        <td><input type="submit" value="Add"</td>
-      </tr>
-      </form>
+
       {% for row in motor_item %}
+      <a href="/motor/view?mid={{ row['mid'] }}" target="_blank">
       <tr>
-        <th>{{ row['id'] }}</th>
-        <th>{{ row['motor'].decode('utf-8') }} </th>
-        <th>{{ row['address'].decode('utf-8') }}</th>
-        <th>{{ row['admin'].decode('utf-8') }}</th>
-        <th>{{ row['phone'] }}</th>     
-        <th>{{ row['number'] }}</th>
+        <td>{{ row['id'] }}</th>
+        <td>{{ row['motor'].decode('utf-8') }} </th>
+        <td>{{ row['address'].decode('utf-8') }}</th>
+        <td>{{ row['admin'].decode('utf-8') }}</th>
+        <td>{{ row['phone'].decode('utf-8') }}</th>     
+        <td>{{ row['create_date_str'].decode('utf-8') }}</th>
+        <td>{{ row['date_str'].decode('utf-8') }}</th>
       </tr>
-      {% endfor %}
+      </a>
+     {% endfor %}
     </table>
-   </div>
-   <div class="midd_container_bottom">
-   <p> {{ info }}</p> {{ motor }}<p>
-   </div>
-   
+    </div>
+    <div class="midd_container_bottom">
+      <table>
+        <tr>
+        {% for i in range(1,pages+1) %}
+          {% if i > 10 %}
+             <td>...</td><td><input type="text" name="page"></td>
+             <td><input type="submit" value="跳转"></td><td>总共 {{pages}} 页</td>
+          {% endif %}
+          {% if request.args.get('page') == i %}
+             <a href="motor?page={{ i }}" target="_self"><td style="color=#000000">{{i}}</td></a>
+          {% endif %}
+          <a href="motor?page={{ i }}" target="_self"><td>{{i}}</td></a>
+        {% endfor %}
+        </tr>
+     </table>
+    </div>
+
   </body>
 </html>

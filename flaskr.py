@@ -6,7 +6,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash,make_response
 from config import *
 from source import *
-import time
+import time,re
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -24,9 +24,27 @@ def teardown_request(exception):
 #def teardown_request(exception):
 @app.route('/static/<filename>')
 def static_(filename):
+    extname = filename.split('.')[1]
+#    return str(extname)
+    image = ['png','gif','jpg','jpeg','ico','bmp']
+    text = ['html','htm','shtml','css','xml']
+    application = ['js']
+    if extname in image:
+        if extname in ['jpg','jpeg']:
+            content_type = 'image/jpeg'
+        elif extname == 'ico':
+            content_type = 'image/x-icon'
+        else: content_type = 'image/' + extname
+    elif extname in text:
+        if extname in ['html','htm','shtml']:
+            content_type = 'text/html'
+        else: content_type = 'text/' + extname
+    elif extname in application:
+        content_type = 'application/javascript'
+        
     with open('static/' + filename) as fd:
          resp = make_response(fd.read())
-         resp.content_type = 'text/css'
+         resp.content_type=content_type
     return resp
 
 @app.route('/')
@@ -56,10 +74,15 @@ def host():
             return render_template('host.html', host_item=host_item,pages=pages)
         else:
             return pages
-    
 
-@app.route("/host/detailed",methods=['GET','POST'])
-def detailed():
+@app.route("/host/add",methods=['POST'])
+def host_add():
+    name = request.cookies.get('name')
+    if not check.check_login(name,g.redis,request.remote_addr):
+        return redirect(url_for('login'))
+
+@app.route("/host/view",methods=['GET','POST'])
+def host_view():
     try:
         cur = g.db.cursor()
         data = dict(request.form.items())
