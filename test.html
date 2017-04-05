@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <link rel="stylesheet" type="text/css" href="/test.css">
+    <title> 这是一个测试 </title>
+    <base href="http://www.atest.pub/images/" target="_blank">
+  </head>
+
+  <body>
+    <h1> This is a title </h1>
+    <h2> 这是一个测试 </h2>
+    <a href="www.aa.com"> 这是一个没有装饰的链接 </a>
+    <h3> This is a title </h3>
+    <h4> This is a title </h4>
+    <p><b>表单练习</b></p>
+    <form name="input" action="123.php" method='post'>
+        <table border="0">
+            <tr>
+                <th>firstname: </th>
+                <th><input type='text' name='firstname'></th>
+            </tr>
+            <tr>
+                <th>lastname: </th>
+                <th><input type='text' name='lastname'></th>
+                <script>
+                document.write("<th>这是一个th标签</th>");
+                </script>
+            </tr>
+            <tr>
+                <th>password: </th>
+                <th><input type='password' name='password'></th>
+            </tr>
+        </table> 
+        <br />
+        <table border="0">
+            <tr>
+               <th colspan='5'>单选框练习</th>
+            </tr>
+            <tr>
+               <th>choice1<input type="radio" name='choice' value='choice1'> </th>
+               <th>choice2<input type="radio" name='choice' value='choice2'> </th>
+               <th>choice3<input type="radio" name='choice5' value='choice3'> </th>
+               <th>choice4<input type="radio" name='choice' value='choice4'> </th>
+               <th>choice5<input type="radio" name='choice' value='choice5'> </th>
+            </tr>
+            <tr></tr>
+            <tr>
+               <th colspan='5'>复选框练习</th>
+            </tr>
+            <tr>
+               <th>optional1<input type="checkbox" name='op' value='optional1'> </th>
+               <th>optional2<input type="checkbox" name='op' value='optional2'> </th>
+               <th>optional3<input type="checkbox" name='op' value='optional3'> </th>
+               <th>optional4<input type="checkbox" name='op' value='optional4'> </th>
+               <th>optional5<input type="checkbox" name='op' value='optional5'> </th>
+            </tr>
+        </table>
+        <input type="submit" value='Submit'>
+        <input type='reset' value='Rest'>
+    </form>
+    <br>
+    <hr />
+    <form name='opti',action='index.php',method='get'>
+      <input type='submit' value='Submit'>
+      <select name='pp'>
+        <option value='volvo'>Volvo</option>
+        <option value='saab' selected>Saab</option>
+        <option value='fiat'>Fiat</option>
+      </select>
+    </form>
+    <br>
+    
+    <form name='tteess' action='index.php' method='post'>
+        <textarea name='text' rows='10' cols='30'></textarea>
+        <input type='submit' value='提交'>
+    </form>
+    <br>
+    <input type='button' value='Hello World'>
+
+    <br><br><br><br>
+    <table border="1">
+      <tr>
+        <th>Header 1</th>
+        <th>Header 2</th>
+      </tr>
+      <tr>
+        <td>第一行、第一列</td>
+        <td>第一行、第二列</td>
+      </tr>
+      <tr>
+        <td>第二行、第一列</td>
+        <td>第二行、第二列</td>
+      </tr>
+    </table>
+
+    <table border="1" width="500">
+      <tr>
+        <th>Name:</th>
+        <td>atest.pub</td>
+      </tr>
+      <tr>
+        <th>Phone:</th>
+        <td>15010101010</td>
+      </tr>
+    </table>
+    <br />
+    <hr />
+    <p>
+            普通文件                <br />
+        <b> 粗体文字 </b>           <br />
+        <em> 着重文字 </em>         <br />
+        <i> 斜体文字 </i>           <br />
+        <small> 小号文字 </small>   <br />
+        <strong> 加重语气 </strong> <br />
+        <sub> 下标文字 </sub>       <br />
+        <sup style="float:right"> 上标文字 </sup>       <br />
+        <ins style="float:center"> 插入效果 </ins>       <br />
+        <del> 删除效果 </del>       <br /> 
+    </p>
+
+    <hr />
+    <p>
+           全凭浏览器解释，不同的浏览器可能效果不完全一样<br />
+        <abbr title="这是缩写的功能"> abbr 就是鼠标放上会显示描述信息 </abbr>   <br />
+        <address> address 是类拟于地址的格式 </address>  <br />
+        <bdo dir dir='rtl'> bdo 设置文件方向，dir属性来设置 </bdo>   <br />
+        <blockquote> blockquote 定义长的引用信息，以引用信息的格式显示,具体效果就是整个文字前面都缩进了,看起来就是一块信息。 </blockquote>  <br />
+        <q> q 定义短的引用语，具体效果就是加上了双引号。 </q>  <br />
+        <cite> cite 引用、引证， 变斜体了 </cite> <br /> 
+        <dfn> dfn 定义一个定义项目. <dfn>
+    </p>
+   
+    <hr />
+    <p>
+           这类标签是类似于计算机打印的信息  <br />
+        <code> 计算机代码 </code>  <br />
+        <kbd>  键盘码     </kbd>   <br />
+        <samp> 定义计算机代码样本 </samp>  <br />
+        <var>  定义变量   </var>   <br />
+        <pre>  预格式文本，也就是在html文件中是什么格式，在浏览器显示就是什么格式,没有开头是因为开头是空格。 </pre> 
+    </p>
+
+  </body>
+</html>

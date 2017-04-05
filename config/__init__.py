@@ -1,4 +1,5 @@
 #!/usr/bin/env python
 #
 #import db,config
-__all__=['config','db']
+import config,db_init
+__all__=['config','db_init']

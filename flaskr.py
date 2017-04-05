@@ -5,8 +5,8 @@
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash,make_response
 from config import *
+from source import *
 import time
-from source import check
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -15,8 +15,8 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 @app.before_request
 def before_request():
-    g.db = db.connect_db()
-    g.redis = db.connect_redis()
+    g.db = db_init.connect_db()
+    g.redis = db_init.connect_redis()
 
 @app.teardown_request
 def teardown_request(exception):
@@ -43,41 +43,40 @@ def host():
     if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
     if request.method == 'GET':
-        try:
-            cur = g.db.cursor()
-            cur.execute(r'select id,hostname,ip1,ip2,ip3,ip4,ip5,ip6,item,service,port,admin,phone,motor,cabinet,pos,status from dm_host limit 100')
-        except Exception,err:
-            return err.message
+
+        host_item,pages = db_sql.select_page_host(g.db,request.args.get('page',1))
+        if host_item != False:
+            return render_template('host.html', host_item=host_item,pages=int(pages))
         else:
-            host_item = [dict(id=row[0],hostname=row[1],ip=[ip for ip in row[2:8] if ip and ip.strip()],item=row[8],service=row[9],port=row[10],admin=row[11],phone=row[12],motor=row[13],cabinet=row[14],pos=row[15],status=row[16]) for row in cur.fetchall()]
+            return str(pages)
 #            abort(401)
-            return render_template('host.html', host_item=host_item)
     else:
-        try:
-            cur = g.db.cursor()
-            data = dict(request.form.items())
-                
-            sql = r"insert into dm_host(hostname,item,service,port,admin,phone,motor,cabinet,pos,status"
-            value = u"VALUES(%(hostname)s,%(item)s,%(service)s,%(port)s,%(admin)s,%(phone)s,%(motor)s,%(cabinet)s,%(pos)s,%(status)s"
-            for ip,num in zip(data['ip'].split(','),(1,2,3,4,5,6)):
-                col = 'ip{}'.format(num)
-                data[col] = ip
-                sql = sql + (',' + col)
-                value = value + (',' + '%(' + col + ')s')
-            sql = sql + ')' + value +')'
+        host_item,pages = db_sql.select_page(g.db,request.args('page',1))
+        if host_item:
+            return render_template('host.html', host_item=host_item,pages=pages)
+        else:
+            return pages
+    
 
-            cur.execute(sql,data)
-            g.db.commit()
-        except Exception,err:
-            info = err.message
-            if 'already exists' in info:
-                info = u'主机已存在, 创建失败'
-            elif 'is not present in table' in info:
-                info = u'机房或机柜不存在, 创建失败'
+@app.route("/host/detailed",methods=['GET','POST'])
+def detailed():
+    try:
+        cur = g.db.cursor()
+        data = dict(request.form.items())
+        sql = r"insert into dm_host(id,hostname,service_ip,service_mac,data_ip,data_mac,monitor_ip,monitor_mac,idrac_ip,idrac_mac,rest_ip,memory,disk,cpu,server_model,system,bios_version,board_model,board_serial,item,service,port,admin,phone,motor,cabinet,pos,status) VALUES((select count(id) from dm_host),%(hostname)s,%(service_ip)s,%(service_mac)s,%(data_ip)s,%(data_mac)s,%(monitor_ip)s,%(monitor_mac)s,%(idrac_ip)s,%(idrac_mac)s,%(rest_ip)s,%(memory)s,%(disk)s,%(cpu)s,%(server_model)s,%(system)s,%(bios_version)s,%(board_model)s,%(board_serial)s,%(item)s,%(service)s,%(port)s,%(admin)s,%(phone)s,%(motor)s,%(cabinet)s,%(pos)s,%(status)s)"
 
-        else: info = u'创建成功'
-      #  return redirect(url_for('motor'))
-        return render_template('host.html',info=info,hostname=request.form.get('hostname'))
+        cur.execute(sql,data)
+        g.db.commit()
+    except Exception,err:
+        info = err.message
+        if 'already exists' in info:
+            info = u'主机已存在, 创建失败'
+        elif 'is not present in table' in info:
+            info = u'机房或机柜不存在, 创建失败'
+
+    else: info = u'创建成功'
+  #  return redirect(url_for('motor'))
+    return render_template('host.html',info=info,hostname=request.form.get('hostname'))
 
 @app.route('/motor',methods=['GET','POST'])
 def motor():
@@ -169,7 +168,7 @@ def login():
             ip = request.remote_addr
             try:
                 pre = app.config['PREFIX']
-                g.redis.hmset(pre + username,{'action':'online','lasttime':nowtime,'lastip':ip})
+                g.redis.hmset(pre + username,{'active':'online','lasttime':nowtime,'lastip':ip})
             except Exception,err:
                 return err.message
             
@@ -184,7 +183,7 @@ def login():
 def logout():
     pre = app.config['PREFIX']
     username = request.cookies.get('name')
-    g.redis.hset(pre+username,'action','offline')
+    g.redis.hset(pre+username,'active','offline')
     
     flash('You were logged out')
     return redirect(url_for('login'))
@@ -201,14 +200,13 @@ def logup():
         elif request.form['password'] != request.form['password_again']:
             info = u'密码不匹配'
         else:
-            dateline = int(time.time())
-            date_str = time.strftime('%Y/%m/%d %H:%M:%S',time.localtime(dateline))
+            dateline,date_str = time_format.time_now()
             data = dict(request.form.items())
-            data['create_date'] = dateline
-            data['create_date_str'] = date_str
+            data['dateline'] = dateline
+            data['date_str'] = date_str
             data['status'] = 'ON'
             data['level'] = 1
-            sql = r"insert into dm_user(username,password,section,phone,email,create_date,create_date_str,status,level)values(%(username)s,%(password)s,%(section)s,%(phone)s,%(email)s,%(create_date)s,%(create_date_str)s,%(status)s,%(level)s)"
+            sql = r"insert into dm_user(username,password,section,phone,email,dateline,date_str,status,level)values(%(username)s,%(password)s,%(section)s,%(phone)s,%(email)s,%(dateline)s,%(date_str)s,%(status)s,%(level)s)"
             try:
                 cur = g.db.cursor()
                 cur.execute(sql,data)

@@ -10,52 +10,43 @@
     <div class="midd_container_left">
     <table class="midd_table" border="1">
       <tr>
-        <th>ID</th> <th>主机名</th> <th>Address</th> <th>项目</th> <th>服务</th> <th>端口</th> <th>负责人</th> <th>电话</th> <th>机房</th> <th>机柜</th> <th>位置(u-u)</th> <th>状态</th>
+        <th>ID</th> <th>主机名</th> <th>业务IP</th> <th>数据IP</th> <th>监控IP</th> <th>项目</th> <th>服务</th> <th>系统</th> <th>负责人</th> <th>电话</th> <th>状态</th>
       </tr>
-      <form name"op_host" action="host" method="post">
-      <tr class="midd_container_input">
-        <td></td>
-        <td><input class="midd_text_input" type="text" name="hostname"</td>
-        <td><input class="midd_text_input"  type="text" name="ip"</td>
-        <td><input class="midd_text_input" type="text" name="item"</td>
-        <td><input class="midd_text_input" type="text" name="service"</td>
-        <td><input class="midd_text_input" type="text" name="port"</td>
-        <td><input class="midd_text_input" type="text" name="admin"</td>
-        <td><input class="midd_text_input" type="text" name="phone"</td>
-        <td><input class="midd_text_input" type="text" name="motor"</td>
-        <td><input class="midd_text_input" type="text" name="cabinet"</td>
-        <td><input class="midd_text_input" type="text" name="pos"</td>
-        <td><input class="midd_text_input" type="text" name="status"</td>
-        <td><input type="submit" value="Add"</td>
-      </tr>
-      </form>
 
       {% for row in host_item %}
+      <a href="detailed?hid={{ row['hid'] }}" target="_blank">
       <tr>
-        <th>{{ row['id'] }}</th>
-        <th>{{ row['hostname'] }} </th>
-        <th><select class="midd_address">
-            {% for ip in row['ip'] %}
-              <option>{{ ip }}</option>
-            {% endfor %}
-            </select>
-        </th>
-        <th>{{ row['item'].decode('utf-8') }}</th>
-        <th>{{ row['service'].decode('utf-8') }}</th>
-        <th>{{ row['port'].decode('utf-8') }}</th>
-        <th>{{ row['admin'].decode('utf-8') }}</th>
-        <th>{{ row['phone'].decode('utf-8') }}</th>     
-        <th>{{ row['motor'].decode('utf-8') }}</th>     
-        <th>{{ row['cabinet'].decode('utf-8') }}</th>     
-        <th>{{ row['pos'].decode('utf-8') }}</th>     
-        <th>{{ row['status'].decode('utf-8') }}</th>
+        <td>{{ row['id'] }}</th>
+        <td>{{ row['hostname'].decode('utf-8') }} </th>
+        <td>{{ row['service_ip'].decode('utf-8') }}</th>
+        <td>{{ row['data_ip'].decode('utf-8') }}</th>     
+        <td>{{ row['monitor_ip'].decode('utf-8') }}</th>     
+        <td>{{ row['item'].decode('utf-8') }}</th>
+        <td>{{ row['service'].decode('utf-8') }}</th>
+        <td>{{ row['system'].decode('utf-8') }}</th>     
+        <td>{{ row['admin'].decode('utf-8') }}</th>
+        <td>{{ row['phone'].decode('utf-8') }}</th>     
+        <td>{{ row['status'].decode('utf-8') }}</th>
       </tr>
+      </a>
      {% endfor %}
     </table>
     </div>
     <div class="midd_container_bottom">
-      <p> {{ info }}</p>
-      <p width="1em">{{ hostname }}<p>
+      <table>
+        <tr>
+        {% for i in range(1,pages+1) %}
+          {% if i > 10 %}
+             <td>...</td><td><input type="text" name="page"></td>
+             <td><input type="submit" value="跳转"></td><td>总共 {{pages}} 页</td>
+          {% endif %}
+          {% if request.args.get('page') == i %}
+             <a href="host?page={{ i }}" target="_self"><td style="color=#000000">{{i}}</td></a>
+          {% endif %}
+          <a href="host?page={{ i }}" target="_self"><td>{{i}}</td></a>
+        {% endfor %}
+        </tr>
+     </table>
     </div>
 
   </body>

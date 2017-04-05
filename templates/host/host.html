@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title> 主机信息 </title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+  </head>
+
+  <body>
+    <div>
+      <table class="midd_table" border="1">
+        <tr>
+          <td>hid:</td>
+          <td id="hid">{{ hid }}</td>
+          <td>主机名称:</td>
+          <td id="hostname">{{ hostname }}</td>
+        </tr>
+        <tr>
+          <td>业务IP:</td>
+          <td id="service_IP">{{ service_ip }}</td>
+          <td>业务MAC:</td>
+          <td id="service_mac">{{ service_mac }}</td>
+        </tr>
+        <tr>
+          <td>数据IP:</td>
+          <td id="data_IP">{{ data_ip }}</td>
+          <td>数据MAC:</td>
+          <td id="data_mac">{{ data_mac }}</td>
+        </tr>
+        <tr>
+          <td>监控IP:</td>
+          <td id="monitor_IP">{{ monitor_ip }}</td>
+          <td>监控MAC:</td>
+          <td id="monitor_mac">{{ monitor_mac }}</td>
+        </tr>
+        <tr>
+          <td>iDRAC卡IP:</td>
+          <td id="idrac_IP">{{ idrac_ip }}</td>
+          <td>iDRAC卡MAC:</td>
+          <td id="idrac_mac">{{ idrac_mac }}</td>
+        </tr>
+        <tr>
+          <td>其它IP:</td>
+          <td id="rest_ip">{{ rest_ip }}</td>
+          <td>内存:</td>
+          <td id="memory">{{ memory }}</td>
+        </tr>
+        <tr>
+          <td>磁盘:</td>
+          <td id="disk">{{ disk }}</td>
+          <td>CPU:</td>
+          <td id="cpu">{{ cpu }}</td>
+        </tr>
+        <tr>
+          <td>服务器型号:</td>
+          <td id="server_model">{{ server_model }}</td>
+          <td>系统版本:</td>
+          <td id="system">{{ system }}</td>
+        </tr>
+        <tr>
+          <td>BIOS版本:</td>
+          <td id="bios_version">{{ bios_version }}</td>
+          <td>主板型号:</td>
+          <td id="board_model">{{ board_model }}</td>
+        </tr>
+        <tr>
+          <td>主板序列号:</td>
+          <td id="board_serial">{{ board_serial }}</td>
+          <td>所属项目:</td>
+          <td id="item">{{ item }}</td>
+        </tr>
+        <tr>
+          <td>服务类型:</td>
+          <td id="service">{{ service }}</td>
+          <td>打开的端口:</td>
+          <td id="port">{{ port }}</td>
+        </tr>
+        <tr>
+          <td>负责人:</td>
+          <td id="admin">{{ admin }}</td>
+          <td>电话:</td>
+          <td id="phone">{{ phone }}</td>
+        </tr>
+        <tr>
+          <td>机房编号:</td>
+          <td id="motor">{{ motor }}</td>
+          <td>机房地址:</td>
+          <td id="motor_address">{{ motor_address }}
+        </tr>
+        <tr>
+          <td>机柜编号:</td>
+          <td id="cabinet">{{ cabinet }}</td>
+          <td>机柜中的位置:</td>
+          <td id="pos"</td>{{ pos }}</td>
+        </tr>
+        <tr>
+          <td>最近修改时间:</td>
+          <td id='date_str'>{{ date_str }}</td>
+          <td>机器状态:</td>
+          <td id='status'>{{ status }}</td>
+        </tr>
+        <tr>
+          <td>描述信息:</td>
+          <td id='description' colspan='4'>{{ description }}</td>
+        </tr>
+    </table>
+    </div>
+  </body>
+</html>
