@@ -16,12 +16,12 @@
         <td rowspan='2'><input type="submit" value="搜索">
       </form>
 
-        <td><a href='/static/motor.html' target="_self"> <input type="button" value="创建机房"></a>
+        <td><a href="{{ url_for('add_item',filename='motor.html') }}" target="_self"> <input type="button" value="创建机房"></a>
         <td><input type="button" value="删除机房">
       </tr>
     <table class="midd_table" border="1">
       <tr>
-        <th>ID</th> <th>机房编号</th> <th>地址</th> <th>负责人</th> <th>电话</th> <th>创建日期</th><th>上次修改日期</th>
+        <th>ID</th> <th>机房编号</th> <th>机房名称</th> <th>地址</th> <th>负责人</th> <th>电话</th> <th>创建日期</th>
       </tr>
 
       {% for row in motor_item %}
@@ -29,11 +29,11 @@
       <tr>
         <td>{{ row['id'] }}</th>
         <td>{{ row['motor'].decode('utf-8') }} </th>
+        <td>{{ row['motorname'].decode('utf-8') }} </th>
         <td>{{ row['address'].decode('utf-8') }}</th>
         <td>{{ row['admin'].decode('utf-8') }}</th>
         <td>{{ row['phone'].decode('utf-8') }}</th>     
         <td>{{ row['create_date_str'].decode('utf-8') }}</th>
-        <td>{{ row['date_str'].decode('utf-8') }}</th>
       </tr>
       </a>
      {% endfor %}

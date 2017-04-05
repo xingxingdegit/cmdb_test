@@ -14,11 +14,11 @@
         <td>服务</td><td><input type="text" name="service"></td>
         <td>主机名</td><td><input type="text" name="hostname"></td>
         <td>IP</td><td><input type="text" name="ip"></td>
-        <td rowspan='2'><input type="submit" value="搜索">
+        <td rowspan="2"><input type="submit" value="搜索">
       </form>
 
-        <td rowspan='2'><a href='/static/host.html' target="_self"> <input type="button" value="创建主机"></a>
-        <td rowspan='2'><input type="button" value="删除主机">
+        <td rowspan="2"><a href="{{ url_for('add_item',filename='host.html') }}" target="_self"> <input type="button" value="创建主机"></a>
+        <td rowspan="2"><input type="button" value="删除主机">
       </tr>
       <tr>
         <td>机房编号</td><td><input type="text" name="motor"></td>

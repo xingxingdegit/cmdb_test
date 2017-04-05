@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title> 创建机柜 </title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+  </head>
+
+  <body>
+    <div>
+      <table class="midd_table" border="1">
+      <form name="add_cabinet" action="{{ url_for('add_item',filename='cabinet') }}" method="post">
+        <tr>
+          <td>机房编号:</td>
+          <td id="motor"><input type="text" name="motor"></td>
+          <td>机柜编号:</td>
+          <td id="cabinet"><input type="text" name="cabinet"></td>
+        </tr>
+        <tr>
+          <td>第几排</td>
+          <td id="row"><input type="text" name="row"></td>
+          <td>第几列</td>
+          <td id="col"><input type="text" name="col"></td>
+        </tr>
+        <tr>
+          <td>机柜高度:</td>
+          <td id="height"><input type="text" name="height"></td>
+        </tr>
+        <tr>
+          <td>描述信息:</td>
+          <td id='description' colspan='3'><input type="text" name="description"></td>
+        </tr>
+        <tr>
+          <td colspan="4"><input type="submit" value="提交"></td>
+      <form>
+    </table>
+    </div>
+  </body>
+</html>

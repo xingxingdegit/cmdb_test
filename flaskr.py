@@ -57,6 +57,7 @@ def index():
         
 @app.route('/host',methods=['GET','POST'])
 def host():
+#查看主机列表信息，分页显示
     name = request.cookies.get('name')
     if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
@@ -69,114 +70,90 @@ def host():
             return str(pages)
 #            abort(401)
     else:
-        host_item,pages = db_sql.select_page(g.db,request.args('page',1))
+        host_item,pages = db_sql.select_page(g.db,request.form('page',1))
         if host_item:
             return render_template('host.html', host_item=host_item,pages=pages)
         else:
             return pages
 
-@app.route("/host/add",methods=['POST'])
-def host_add():
+@app.route("/add/<filename>",methods=['GET','POST'])
+def add_item(filename):
+    #添加主机，机柜或机房。
     name = request.cookies.get('name')
     if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
+    if request.method == 'POST':
+        if filename == 'host.html':
+            data = dict(request.form.items())
+            status,info = db_sql.insert_all_host(g.db,data)
+            return render_template('add/host.html',status=status,info=info)
+    
+        elif filename == 'motor.html':
+            data = dict(request.form.items())
+            status,info = db_sql.insert_all_motor(g.db,data)
+            return render_template('add/motor.html',status=status,info=info)
+    
+        elif filename == 'cabinet.html':
+            data = dict(request.form.items())
+            status,info = db_sql.insert_all_cabinet(g.db,data)
+            return render_template('add/cabinet.html',status=status,info=info)
+        else:
+            return u'添加的是不存在的项目'
+
+    else:
+        if filename in ['host.html','motor.html','cabinet.html']:
+            return render_template(url_for('add_item',filename=filename))
+        else:
+            return u'打开的是不存在的项目'
+        
+    
 
 @app.route("/host/view",methods=['GET','POST'])
 def host_view():
-    try:
-        cur = g.db.cursor()
-        data = dict(request.form.items())
-        sql = r"insert into dm_host(id,hostname,service_ip,service_mac,data_ip,data_mac,monitor_ip,monitor_mac,idrac_ip,idrac_mac,rest_ip,memory,disk,cpu,server_model,system,bios_version,board_model,board_serial,item,service,port,admin,phone,motor,cabinet,pos,status) VALUES((select count(id) from dm_host),%(hostname)s,%(service_ip)s,%(service_mac)s,%(data_ip)s,%(data_mac)s,%(monitor_ip)s,%(monitor_mac)s,%(idrac_ip)s,%(idrac_mac)s,%(rest_ip)s,%(memory)s,%(disk)s,%(cpu)s,%(server_model)s,%(system)s,%(bios_version)s,%(board_model)s,%(board_serial)s,%(item)s,%(service)s,%(port)s,%(admin)s,%(phone)s,%(motor)s,%(cabinet)s,%(pos)s,%(status)s)"
-
-        cur.execute(sql,data)
-        g.db.commit()
-    except Exception,err:
-        info = err.message
-        if 'already exists' in info:
-            info = u'主机已存在, 创建失败'
-        elif 'is not present in table' in info:
-            info = u'机房或机柜不存在, 创建失败'
-
-    else: info = u'创建成功'
-  #  return redirect(url_for('motor'))
-    return render_template('host.html',info=info,hostname=request.form.get('hostname'))
+#编辑
+    pass
 
 @app.route('/motor',methods=['GET','POST'])
 def motor():
+#查看机房列表信息，分页显示
     name = request.cookies.get('name')
     if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
     if request.method == 'GET':
-        try:
-            cur = g.db.cursor()
-            cur.execute('select id,motor,address,admin,phone from dm_motor limit 100')
-            all_data = cur.fetchall()
-            cur.execute(r'select motor,count(*) from dm_host group by motor')
-            motor_host_num = dict(cur.fetchall())
-        except Exception,err:
-            g.db.close()
-            return err.message
+        motor_item,pages = db_sql.select_page_motor(g.db,request.args.get('page',1))
+        if motor_item != False:
+            return render_template('motor.html', motor_item=motor_item,pages=int(pages))
         else:
-            motor_item = [dict(id=row[0],motor=row[1],address=row[2],admin=row[3],phone=row[4],number=motor_host_num.get(row[1],0)) for row in all_data]
-            return render_template('motor.html', motor_item=motor_item)
+            return str(pages)
+#            abort(401)
     else:
-        try:
-            cur = g.db.cursor()
-            sql = r"insert into dm_motor(motor,address,admin,phone)values(%(motor)s,%(address)s,%(admin)s,%(phone)s)"
-            cur.execute(sql,request.form)
-            g.db.commit()
-        except Exception,err:
-            info = err.message
-            if 'already exists' in info:
-                info = u'机房已存在'
-        else: info = u'创建成功'
-      #  return redirect(url_for('motor'))
-        return render_template('motor.html',info=info,motor=request.form.get('motor'))
+        motor_item,pages = db_sql.select_page(g.db,request.form('page',1))
+        if host_item:
+            return render_template('motor.html', motor_item=motor_item,pages=pages)
+        else:
+            return pages
+
 
 @app.route('/cabinet',methods=['GET','POST'])
 def cabinet():
+#查看机柜列表信息，分页显示
     name = request.cookies.get('name')
     if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
     if request.method == 'GET':
-        try:
-            cur = g.db.cursor()
-            cur.execute('select id,motor,cabinet,row,col,height from dm_cabinet limit 100')
-        except Exception,err:
-            g.db.close()
-            return err.message
+        cabinet_item,pages = db_sql.select_page_motor(g.db,request.args.get('page',1))
+        if cabinet_item != False:
+            return render_template('cabinet.html', cabinet_item=cabinet_item,pages=int(pages))
         else:
-            cabinet_item = [dict(id=row[0],motor=row[1],cabinet=row[2],row=row[3],col=row[4],height=row[5]) for row in cur.fetchall()]
-            return render_template('cabinet.html', cabinet_item=cabinet_item)
+            return str(pages)
+#            abort(401)
     else:
-        try:
-            cur = g.db.cursor()
-            sql = r"insert into dm_cabinet(motor,cabinet,row,col,height)values(%(motor)s,%(cabinet)s,%(row)s,%(col)s,%(height)s)"
-            cur.execute(sql,request.form)
-            g.db.commit()
-        except Exception,err:
-            info = err.message
-            if "is not present in table" in info:
-                info = u'机房不存在'
-            elif 'already exists' in info:
-                info = u'机房中此机柜已存在'
-        else: info = u'创建成功'
-      #  return redirect(url_for('motor'))
-        return render_template('cabinet.html',info=info,motor=request.form.get('cabinet'))
+        cabinet_item,pages = db_sql.select_page(g.db,request.form('page',1))
+        if host_item:
+            return render_template('cabinet.html', cabinet_item=cabinet_item,pages=pages)
+        else:
+            return pages
 
-
-@app.route('/del',methods=['POST'])
-def del_entry():
-    if not session.get(request.cookies['name']):
-        return redirect(url_for('login'))
-    try:
-        cur = g.db.cursor()
-        sql = u"delete from entries where id = %s" % request.form['tid']
-        cur.execute(sql)
-        g.db.commit()
-    except Exception,err:
-        return err.message
-    return redirect(url_for('show_entries'))
 
 @app.route('/login',methods=['GET','POST'])
 def login():

@@ -14,10 +14,10 @@
         <td>机房编号</td><td><input type="text" name="motor"></td>
         <td>机柜编号</td><td><input type="text" name="cabinet"></td>
         <td>机柜高度</td><td><input type="text" name="height"></td>
-        <td rowspan='1'><input type="submit" value="搜索">
+        <td rowspan="1"><input type="submit" value="搜索">
       </form>
 
-        <td><a href='/static/cabinet.html' target="_self"> <input type="button" value="创建机柜"></a>
+        <td><a href="{{ url_for('add_item',filename='cabinet.html') }}" target="_self"> <input type="button" value="创建机柜"></a>
         <td><input type="button" value="删除机柜">
       </tr>
     <table class="midd_table" border="1">
