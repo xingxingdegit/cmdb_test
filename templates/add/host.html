@@ -9,7 +9,7 @@
   <body>
     <div>
       <table class="midd_table" border="1">
-      <form name="add_host" action="{{ url_for('add.item',filename='host.html') }}" method="post">
+      <form name="add_host" action="{{ url_for('add_item',filename='host.html') }}" method="post">
         <tr>
           <td>主机名称:</td>
           <td id="hostname"><input type="text" name="hostname"></td>
@@ -19,6 +19,12 @@
               <option value="离线">离线</option>
               <option value="故障">故障</option>
             </select> </td>
+        </tr>
+        <tr>
+          <td>机房编号:</td>
+          <td id="motor"><input type="text" name="motor"></td>
+          <td>机柜编号:</td>
+          <td id="cabinet"><input type="text" name="cabinet"></td>
         </tr>
         <tr>
           <td>业务IP:</td>
@@ -87,14 +93,6 @@
           <td id="phone"><input type="text" name="phone"></td>
         </tr>
         <tr>
-          <td>机房编号:</td>
-          <td id="motor"><input type="text" name="motor"></td>
-          <td>机房地址:</td>
-          <td id="motor_address"><input type="text" name="motor_address">
-        </tr>
-        <tr>
-          <td>机柜编号:</td>
-          <td id="cabinet"><input type="text" name="cabinet"></td>
           <td>机柜中的位置:</td>
           <td id="pos"</td><input type="text" name="pos"></td>
         </tr>
@@ -106,6 +104,13 @@
           <td colspan="4"><input type="submit" value="提交"></td>
       <form>
     </table>
+      <div>
+        {% if status %}
+          <p>{{ info }}</p>
+        {% else %}
+          <p>{{ info }}</p>
+        {% endif %}
+     </div>
     </div>
   </body>
 </html>

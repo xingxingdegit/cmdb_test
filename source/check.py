@@ -13,7 +13,7 @@ def check_login(name,conn,ip):
            if user_data['active'] == 'online':
                if (nowtime - int(user_data.get('lasttime'))) <= 1800:
                    if user_data['lastip'] == ip:
-                       conn.hset(name,'lasttime',nowtime)
+                       conn.hset(pre + name,'lasttime',nowtime)
                        return True
        except:
            return False

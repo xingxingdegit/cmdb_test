@@ -22,10 +22,10 @@
       </tr>
     <table class="midd_table" border="1">
       <tr>
-        <th>ID</th> <th>机房编号</th> <th>机柜</th> <th>第几排</th> <th>第几列</th><th>高度(u)</th> <th>电话</th> <th>修改时间</th> 
+        <th>ID</th> <th>机房编号</th> <th>机柜</th> <th>第几排</th> <th>第几列</th><th>高度(u)</th> 
       </tr>
 
-      {% for row in motor_item %}
+      {% for row in cabinet_item %}
       <a href="/cabinet/view?mid={{ row['cid'] }}" target="_blank">
       <tr>
         <td>{{ row['id'] }}</th>
@@ -34,7 +34,6 @@
         <td>{{ row['row'].decode('utf-8') }}</th>
         <td>{{ row['col'].decode('utf-8') }}</th>     
         <td>{{ row['height'].decode('utf-8') }}</th>     
-        <td>{{ row['date_str'].decode('utf-8') }}</th>
       </tr>
       </a>
      {% endfor %}

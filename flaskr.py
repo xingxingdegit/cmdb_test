@@ -86,17 +86,17 @@ def add_item(filename):
         if filename == 'host.html':
             data = dict(request.form.items())
             status,info = db_sql.insert_all_host(g.db,data)
-            return render_template('add/host.html',status=status,info=info)
+            return render_template(url_for('add_item',filename=filename),status=status,info=info)
     
         elif filename == 'motor.html':
             data = dict(request.form.items())
             status,info = db_sql.insert_all_motor(g.db,data)
-            return render_template('add/motor.html',status=status,info=info)
+            return render_template(url_for('add_item',filename=filename),status=status,info=info)
     
         elif filename == 'cabinet.html':
             data = dict(request.form.items())
             status,info = db_sql.insert_all_cabinet(g.db,data)
-            return render_template('add/cabinet.html',status=status,info=info)
+            return render_template(url_for('add_item',filename=filename),status=status,info=info)
         else:
             return u'添加的是不存在的项目'
 
@@ -141,14 +141,14 @@ def cabinet():
     if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
     if request.method == 'GET':
-        cabinet_item,pages = db_sql.select_page_motor(g.db,request.args.get('page',1))
+        cabinet_item,pages = db_sql.select_page_cabinet(g.db,request.args.get('page',1))
         if cabinet_item != False:
             return render_template('cabinet.html', cabinet_item=cabinet_item,pages=int(pages))
         else:
             return str(pages)
 #            abort(401)
     else:
-        cabinet_item,pages = db_sql.select_page(g.db,request.form('page',1))
+        cabinet_item,pages = db_sql.select_page_cabinet(g.db,request.form('page',1))
         if host_item:
             return render_template('cabinet.html', cabinet_item=cabinet_item,pages=pages)
         else:

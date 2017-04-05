@@ -34,6 +34,13 @@
           <td colspan="4"><input type="submit" value="提交"></td>
       <form>
     </table>
+      <div>
+        {% if status %}
+          <p>{{ info }}</p>
+        {% else %}
+          <p>{{ info }}</p>
+        {% endif %}
+      </div>
     </div>
   </body>
 </html>

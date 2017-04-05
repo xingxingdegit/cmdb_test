@@ -45,7 +45,11 @@ def select_page_host(conn,page):
         cur.execute(sql)
         data = cur.fetchall()
         id = 1
-        data_list = [dict(id=id+1,hid=row[0],hostname=row[1],service_ip=row[2],data_ip=row[3],monitor_ip=row[4],item=row[5],service=row[6],system=row[7],admin=row[8],phone=row[9],status=row[10],data_str=row[11]) for row in data]
+        data_list = []
+        for row in data:
+            data_list.append(dict(id=id,hid=row[0],hostname=row[1],service_ip=row[2],data_ip=row[3],monitor_ip=row[4],item=row[5],service=row[6],system=row[7],admin=row[8],phone=row[9],status=row[10],data_str=row[11]))
+            id += 1
+
     except Exception,err:
         return False,err.message
     else:
@@ -55,7 +59,7 @@ def select_page_cabinet(conn,page):
     #根据请求页数，获取数据，并返回数据数典和总的页数。 如果有问题，则返回 False和错误信息。
     try:
         cur = conn.cursor()
-        cur.execute(r'select count(cid) from dm_host')
+        cur.execute(r'select count(cid) from dm_cabinet')
     except Exception,err:
         return False,err.message
     try:
@@ -92,7 +96,10 @@ def select_page_cabinet(conn,page):
         cur.execute(sql)
         data = cur.fetchall()
         id = 1
-        data_list = [dict(id=id+1,cid=row[0],motor=row[1],cabinet=row[2],row=row[3],col=row[4],height=row[5],date_str=row[6]) for row in data]
+        data_list = []
+        for row in data:
+            data_list.append(dict(id=id,cid=row[0],motor=row[1],cabinet=row[2],row=row[3],col=row[4],height=row[5],date_str=row[6]))
+            id += 1
     except Exception,err:
         return False,err.message
     else:
@@ -142,8 +149,11 @@ def select_page_motor(conn,page):
         #存储每个机房有多少机器。
         motor_host = dict(cur.fetchall())
         id = 1
-        data_list = [dict(id=id,mid=row[0],motor=row[1],motorname=row[2],address=row[3],admin=row[4],phone=row[5],motor_host=motor_host[row[1]],create_date_str=row[6]) for row in data id += 1]
-        return False,str(data_list[:])
+        data_list = []
+        for row in data:
+            data_list.append(dict(id=id,mid=row[0],motor=row[1],motorname=row[2],address=row[3],admin=row[4],phone=row[5],motor_host=motor_host.get(row[1],0),create_date_str=row[6])) 
+            id += 1 
+
     except Exception,err:
         return False,err.message
     else:
@@ -151,9 +161,10 @@ def select_page_motor(conn,page):
 
 def insert_all_host(conn,data):
     dateline,date_str = time_format.time_now()
-    sql = r'insert into dm_host(username,service_ip,service_mac,data_ip,data_mac,monitor_ip,monitor_mac,idrac_ip,idrac_mac,rest_ip,memory,disk,cpu,server_model,system,bios_version,board_model,board_serial,item,service,port,admin,phone,motor,cabinet,pos,status,create_date,create_date_str,description) values (%(username)s,%(service_ip)s,%(service_mac)s,%(data_ip),%(data_mac)s,%(monitor_ip)s,%(monitor_mac)s,%(idrac_ip)s,%(idrac_mac)s,%(rest_ip)s,%(memory)s,%(disk)s,%(cpu)s,%(server_model)s,%(system)s,%(bios_version)s,%(board_model)s,%(board_serial)s,%(item)s,%(service)s,%(port)s,%(admin)s,%(phone)s,%(motor)s,%(cabinet)s,%(pos)s,%(status)s,%(create_date)s,%(create_date_str)s,%(description)s)'
+    sql = r'insert into dm_host(hostname,service_ip,service_mac,data_ip,data_mac,monitor_ip,monitor_mac,idrac_ip,idrac_mac,rest_ip,memory,disk,cpu,server_model,system,bios_version,board_model,board_serial,item,service,port,admin,phone,motor,cabinet,pos,status,create_date,create_date_str,description) values (%(hostname)s,%(service_ip)s,%(service_mac)s,%(data_ip)s,%(data_mac)s,%(monitor_ip)s,%(monitor_mac)s,%(idrac_ip)s,%(idrac_mac)s,%(rest_ip)s,%(memory)s,%(disk)s,%(cpu)s,%(server_model)s,%(system)s,%(bios_version)s,%(board_model)s,%(board_serial)s,%(item)s,%(service)s,%(port)s,%(admin)s,%(phone)s,%(motor)s,%(cabinet)s,%(pos)s,%(status)s,%(create_date)s,%(create_date_str)s,%(description)s)'
     data['create_date'] = dateline
     data['create_date_str'] = date_str
+
     try:
         cur = conn.cursor()
         cur.execute(sql,data)
@@ -197,11 +208,11 @@ def insert_all_cabinet(conn,data):
         conn.commit()
     except Exception,err:
         info = err.message
-        if "is not present in table" in info:
+        if 'is not present in table "dm_motor"' in info:
             info = u'机房不存在'
         elif 'already exists' in info:
             info = u'机房中此机柜已存在'
-        return False,err.message
+        return False,info
 
     else:
         return True,u'创建成功'

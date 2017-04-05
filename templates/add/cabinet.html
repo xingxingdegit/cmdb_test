@@ -9,7 +9,7 @@
   <body>
     <div>
       <table class="midd_table" border="1">
-      <form name="add_cabinet" action="{{ url_for('add_item',filename='cabinet') }}" method="post">
+      <form name="add_cabinet" action="{{ url_for('add_item',filename='cabinet.html') }}" method="post">
         <tr>
           <td>机房编号:</td>
           <td id="motor"><input type="text" name="motor"></td>
@@ -32,8 +32,16 @@
         </tr>
         <tr>
           <td colspan="4"><input type="submit" value="提交"></td>
+        </tr>
       <form>
     </table>
+      <div>
+        {% if status %}
+          <p>{{ info }}</p>
+        {% else %}
+          <p>{{ info }}</p>
+        {% endif %}
+      </div>
     </div>
   </body>
 </html>
