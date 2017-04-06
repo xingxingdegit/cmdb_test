@@ -11,13 +11,14 @@
           if ( typeof(once[id]) == "undefined") {
             document.getElementById(id).innerHTML='<td><input type="text" name=' + id + ' value=' + value + ' ></td>';
           }
-          once[id] = id
+          once[id] = id;
       }
       
     </script>
 
   <body>
     <div>
+      <form name="edit_host" method="post">
       <table class="midd_table" border="1">
         <tr>
           <td>主机名称:</td><td id="hostname" onclick="edit('hostname','{{ hostname }}')">{{ hostname }}</td>
@@ -88,19 +89,20 @@
         </tr>
         <tr>
           <td>机柜中的位置:</td><td id="pos" onclick="edit('pos','{{ pos }}')">{{ pos }}</td>
+          <td>主机唯一ID:</td><td id="hid"><input type="text" name="hid" disabled="true" value="{{ hid }}"></td>
         </tr>
         <tr>
-          <td>描述信息:</td><td id="description" onclick="edit('description','{{ description }}')">{{ description }}</td>
+          <td>描述信息:</td><td id="description" onclick="edit('description','{{ description.decode('utf-8') }}')">{{ description.decode('utf-8') }}</td>
         </tr>
         <tr>
-          <td colspan="4"><input type="submit" value="提交"></td>
-      <form>
-    </table>
+          <td colspan="4"><input type="submit" value="更新"></td>
+      </table>
+      </form>
       <div>
-        {% if status %}
-          <p>{{ info }}</p>
+        {% if exe_status %}
+          <p>{{ exe_info }}</p>
         {% else %}
-          <p>{{ info }}</p>
+          <p>{{ exe_info }}</p>
         {% endif %}
      </div>
     </div>

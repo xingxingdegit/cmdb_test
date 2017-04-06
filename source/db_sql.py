@@ -4,6 +4,25 @@
 import math,time_format
 from config import config
 
+def sql_filter(data,table,op):
+    if op.lower() == 'insert':
+        sql = 'insert into %s(' % table
+        value = 'values('
+        for key in data:
+            sql = sql + key + ','
+            value = value + ('%%(%s)s,' % key)
+        sql = sql.strip(',') + ')' + value.strip(',') + ')'
+    elif op.lower() == 'update':
+        sql = 'update %s set ' % table
+        for key in data:
+            sql = sql + ("%s='%s'," % (key,data[key]))
+        return sql.strip(',') + ' '
+    else:
+        sql =  u'不支持此操作'
+
+    return sql
+
+
 def select_page_host(conn,page):
     #根据请求页数，获取数据，并返回数据数典和总的页数。 如果有问题，则返回 False和错误信息。
     try:
@@ -161,15 +180,17 @@ def select_page_motor(conn,page):
 
 def insert_all_host(conn,data):
     dateline,date_str = time_format.time_now()
-    sql = r'insert into dm_host(hostname,service_ip,service_mac,data_ip,data_mac,monitor_ip,monitor_mac,idrac_ip,idrac_mac,rest_ip,memory,disk,cpu,server_model,system,bios_version,board_model,board_serial,item,service,port,admin,phone,motor,cabinet,pos,status,create_date,create_date_str,description) values (%(hostname)s,%(service_ip)s,%(service_mac)s,%(data_ip)s,%(data_mac)s,%(monitor_ip)s,%(monitor_mac)s,%(idrac_ip)s,%(idrac_mac)s,%(rest_ip)s,%(memory)s,%(disk)s,%(cpu)s,%(server_model)s,%(system)s,%(bios_version)s,%(board_model)s,%(board_serial)s,%(item)s,%(service)s,%(port)s,%(admin)s,%(phone)s,%(motor)s,%(cabinet)s,%(pos)s,%(status)s,%(create_date)s,%(create_date_str)s,%(description)s)'
     data['create_date'] = dateline
     data['create_date_str'] = date_str
+    data['dateline'] = dateline
+    data['date_str'] = dateline
+    sql = sql_filter(data,'dm_host','insert')
 
     try:
         cur = conn.cursor()
         cur.execute(sql,data)
-        conn.commit()
     except Exception,err:
+        conn.rollback()
         info = err.message
         if 'already exists' in info:
             info = u'主机已存在, 创建失败'
@@ -177,36 +198,42 @@ def insert_all_host(conn,data):
             info = u'机房或机柜不存在, 创建失败'
         return False,info
     else:
+        conn.commit()
         return True,u'创建成功'
 
 def insert_all_motor(conn,data):
     dateline,date_str = time_format.time_now()
-    sql = r'insert into dm_motor(motor,motorname,address,admin,phone,create_date,create_date_str,description) values (%(motor)s,%(motorname)s,%(address)s,%(admin)s,%(phone)s,%(create_date)s,%(create_date_str)s,%(description)s)'
-
     data['create_date'] = dateline
     data['create_date_str'] = date_str
+    data['dateline'] = dateline
+    data['date_str'] = dateline
+    sql = sql_filter(data,'dm_motor','insert')
     try:
         cur = conn.cursor()
         cur.execute(sql,data)
-        conn.commit()
     except Exception,err:
+        conn.rollback()
         info = err.message
         if 'already exists' in info:
             info = u'机房已存在'
         return False,info
     else:
+        conn.commit()
         return True,u'创建成功'
 
 def insert_all_cabinet(conn,data):
     dateline,date_str = time_format.time_now()
-    sql = r'insert into dm_cabinet(motor,cabinet,row,col,height,description) values (%(motor)s,%(cabinet)s,%(row)s,%(col)s,%(height)s,%(description)s)'
     data['create_date'] = dateline
     data['create_date_str'] = date_str
+    data['dateline'] = dateline
+    data['date_str'] = dateline
+    sql = sql_filter(data,'dm_cabinet','insert')
+
     try:
         cur = conn.cursor()
         cur.execute(sql,data)
-        conn.commit()
     except Exception,err:
+        conn.rollback()
         info = err.message
         if 'is not present in table "dm_motor"' in info:
             info = u'机房不存在'
@@ -215,30 +242,40 @@ def insert_all_cabinet(conn,data):
         return False,info
 
     else:
+        conn.commit()
         return True,u'创建成功'
 
 def select_all_host(conn,hid):
-    sql = r'select hostname,service_ip,service_mac,data_ip,data_mac,monitor_ip,monitor_mac,idrac_ip,idrac_mac,rest_ip,memory,disk,cpu,server_model,system,bios_version,board_model,board_serial,item,service,port,admin,phone,motor,cabinet,pos,status,date_str,create_date_str,description from dm_host where hid = %d' % hid
+    sql = r'select hostname,service_ip,service_mac,data_ip,data_mac,monitor_ip,monitor_mac,idrac_ip,idrac_mac,rest_ip,memory,disk,cpu,server_model,system,bios_version,board_model,board_serial,item,service,port,admin,phone,motor,cabinet,pos,status,date_str,create_date_str,description from dm_host where hid = %s' % hid
     try:
         cur = conn.cursor()
         cur.execute(sql)
         data = cur.fetchone()
     except Exception,err:
         return False,err.message
-    data_dict = dict(hostname=data[0],service_ip=data[1],service_mac=data[2],data_ip=data[3],data_mac=data[4],monitor_ip=data[5],monitor_mac=data[6],idrac_ip=data[7],idrac_mac=data[8],rest_ip=data[9],memory=data[10],disk=data[11],cpu=data[12],server_model=data[13],system=data[14],bios_version=data[15],board_model=data[16],board_serial=data[17],item=data[18],service=data[19],port=data[20],admin=data[21],phone=data[22],motor=data[23],cabinet=data[24],pos=data[25],status=data[26],date_str=data[27],create_date_str=data[28],description=data[29])
+    data_dict = dict(hid=hid,hostname=data[0],service_ip=data[1],service_mac=data[2],data_ip=data[3],data_mac=data[4],monitor_ip=data[5],monitor_mac=data[6],idrac_ip=data[7],idrac_mac=data[8],rest_ip=data[9],memory=data[10],disk=data[11],cpu=data[12],server_model=data[13],system=data[14],bios_version=data[15],board_model=data[16],board_serial=data[17],item=data[18],service=data[19],port=data[20],admin=data[21],phone=data[22],motor=data[23],cabinet=data[24],pos=data[25],status=data[26],date_str=data[27],create_date_str=data[28],description=data[29])
     return True,data_dict
 
-def sql_filter(data,table_name,op='insert'):
-    if op.lower() == 'insert':
-        sql = 'insert into ' + table_name + '('
-        value = 'values('
+def update_item(conn,id,table,data):
+    dateline,date_str = time_format.time_now()
+    data['dateline'] = dateline
+    data['date_str'] = date_str
+    sql = sql_filter(data,table,'update')
+    if table == 'dm_host':
+        sql = sql + (' where hid=%s' % id)
+    elif table == 'dm_motor':
+        sql = sql + (' where mid=%s' % id)
+    else:
+        sql = sql + (' where cid=%s' % id)
 
-    for key in dict_data:
-        if dict_data[key].isspace():
-            del dict_data[key]
-    for key in dict_data:
-        sql = sql + key + ','
-        value = value + '%(' + key + ')' + ','
+    try:
+        cur = conn.cursor()
+        cur.execute(sql)
+    except Exception,err:
+        conn.rollback()
+        return False,err.message
+    else:
+        conn.commit()
+        return True,u'更新完成'
 
-    return sql.strip(',') + ')' + value.strip(',') + ')'
-    
+

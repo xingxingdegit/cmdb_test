@@ -115,11 +115,26 @@ def view_item(filename):
         return redirect(url_for('login'))
     if request.method == 'GET':
         if filename == 'host.html':
-            status,data = db_sql.select_all_host(g.db,int(request.args.get('hid')))
+            status,data = db_sql.select_all_host(g.db,request.args.get('hid'))
             if status:
                 return render_template(url_for('view_item',filename=filename),**data)
             else:
                 return str(data)
+    else:
+        if filename == 'host.html':
+            data = dict(request.form.items())
+            hid = request.args['hid']
+        
+            status,info = db_sql.update_item(g.db,id=hid,table='dm_host',data=data)
+#            return render_template(url_for('view_item',filename=filename))('?hid=%s' % hid),status=status,info=info)
+            select_status,data = db_sql.select_all_host(g.db,hid)
+            if select_status:
+                return render_template(url_for('view_item',filename=filename),exe_status=status,exe_info=info,**data)
+            else:
+                return str(data)
+
+
+
     return 'abcdefg'
 
 @app.route('/motor',methods=['GET','POST'])
