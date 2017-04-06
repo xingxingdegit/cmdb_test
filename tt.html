@@ -3,14 +3,22 @@
 <head>
   <meta charset="utf-8">
   <title> 测试js </title>
+  <script>
+    function test(key,value) {
+      var abc = Object()
+      abc.first="yang"
+      abc.last="xingxing"
+      if (abc[key] == value) alert("值相同，不会更新提交")
+      else alert("值发生变化，确认提交")
+    }
+  </script>
+    
 </head>
 <body>
   <p id="demo">这是一个JS函数测试</p>
-  <script>
-  function abc() {
-      document.getElementById("demo").innerHTML="x==5 is true";
-  }
-  </script>
-  <p onclick="abc()">Hello</p>
+  <p><input type="text" name="irst"></p>
+  
+<table>
+</a>
 </body>
 </html>

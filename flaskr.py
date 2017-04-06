@@ -108,10 +108,19 @@ def add_item(filename):
         
     
 
-@app.route("/host/view",methods=['GET','POST'])
-def host_view():
-#编辑
-    pass
+@app.route("/view/<filename>",methods=['GET','POST'])
+def view_item(filename):
+    name = request.cookies.get('name')
+    if not check.check_login(name,g.redis,request.remote_addr):
+        return redirect(url_for('login'))
+    if request.method == 'GET':
+        if filename == 'host.html':
+            status,data = db_sql.select_all_host(g.db,int(request.args.get('hid')))
+            if status:
+                return render_template(url_for('view_item',filename=filename),**data)
+            else:
+                return str(data)
+    return 'abcdefg'
 
 @app.route('/motor',methods=['GET','POST'])
 def motor():

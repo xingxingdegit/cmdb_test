@@ -4,6 +4,11 @@
     <meta charset="utf-8">
     <title> 机房框架 </title>
     <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+    <script>
+      function view(mid) {
+          window.open('{{ url_for('view_item',filename='motor.html') }}?mid=' + mid,target='_self')
+      }
+    </script>
   </head>
 
   <body>
@@ -25,17 +30,15 @@
       </tr>
 
       {% for row in motor_item %}
-      <a href="/motor/view?mid={{ row['mid'] }}" target="_blank">
-      <tr>
-        <td>{{ row['id'] }}</th>
-        <td>{{ row['motor'].decode('utf-8') }} </th>
-        <td>{{ row['motorname'].decode('utf-8') }} </th>
-        <td>{{ row['address'].decode('utf-8') }}</th>
-        <td>{{ row['admin'].decode('utf-8') }}</th>
-        <td>{{ row['phone'].decode('utf-8') }}</th>     
-        <td>{{ row['create_date_str'].decode('utf-8') }}</th>
+      <tr onclick="view('{{row['mid']}}')">
+        <td>{{ row['id'] }}</td>
+        <td>{{ row['motor'].decode('utf-8') }} </td>
+        <td>{{ row['motorname'].decode('utf-8') }} </td>
+        <td>{{ row['address'].decode('utf-8') }}</td>
+        <td>{{ row['admin'].decode('utf-8') }}</td>
+        <td>{{ row['phone'].decode('utf-8') }}</td>     
+        <td>{{ row['create_date_str'].decode('utf-8') }}</td>
       </tr>
-      </a>
      {% endfor %}
     </table>
     </div>

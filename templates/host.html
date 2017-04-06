@@ -5,6 +5,11 @@
     <title> 主机框架 </title>
     <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
   </head>
+  <script>
+      function view(hid) {
+          window.open('{{ url_for('view_item',filename='host.html') }}?hid=' + hid,target='_self')
+      }
+  </script>
 
   <body>
     <div class="midd_container_left">
@@ -35,21 +40,19 @@
       </tr>
 
       {% for row in host_item %}
-      <a href="detailed?hid={{ row['hid'] }}" target="_blank">
-      <tr>
-        <td>{{ row['id'] }}</th>
-        <td>{{ row['hostname'].decode('utf-8') }} </th>
-        <td>{{ row['service_ip'].decode('utf-8') }}</th>
-        <td>{{ row['data_ip'].decode('utf-8') }}</th>     
-        <td>{{ row['monitor_ip'].decode('utf-8') }}</th>     
-        <td>{{ row['item'].decode('utf-8') }}</th>
-        <td>{{ row['service'].decode('utf-8') }}</th>
-        <td>{{ row['system'].decode('utf-8') }}</th>     
-        <td>{{ row['admin'].decode('utf-8') }}</th>
-        <td>{{ row['phone'].decode('utf-8') }}</th>     
-        <td>{{ row['status'].decode('utf-8') }}</th>
+      <tr onclick="view('{{ row['hid'] }}')">
+        <td>{{ row['id'] }}</td>
+        <td>{{ row['hostname'].decode('utf-8') }} </td>
+        <td>{{ row['service_ip'].decode('utf-8') }}</td>
+        <td>{{ row['data_ip'].decode('utf-8') }}</td>     
+        <td>{{ row['monitor_ip'].decode('utf-8') }}</td>     
+        <td>{{ row['item'].decode('utf-8') }}</td>
+        <td>{{ row['service'].decode('utf-8') }}</td>
+        <td>{{ row['system'].decode('utf-8') }}</td>     
+        <td>{{ row['admin'].decode('utf-8') }}</td>
+        <td>{{ row['phone'].decode('utf-8') }}</td>     
+        <td>{{ row['status'].decode('utf-8') }}</td>
       </tr>
-      </a>
      {% endfor %}
     </table>
     </div>

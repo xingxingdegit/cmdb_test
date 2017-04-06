@@ -217,6 +217,17 @@ def insert_all_cabinet(conn,data):
     else:
         return True,u'创建成功'
 
+def select_all_host(conn,hid):
+    sql = r'select hostname,service_ip,service_mac,data_ip,data_mac,monitor_ip,monitor_mac,idrac_ip,idrac_mac,rest_ip,memory,disk,cpu,server_model,system,bios_version,board_model,board_serial,item,service,port,admin,phone,motor,cabinet,pos,status,date_str,create_date_str,description from dm_host where hid = %d' % hid
+    try:
+        cur = conn.cursor()
+        cur.execute(sql)
+        data = cur.fetchone()
+    except Exception,err:
+        return False,err.message
+    data_dict = dict(hostname=data[0],service_ip=data[1],service_mac=data[2],data_ip=data[3],data_mac=data[4],monitor_ip=data[5],monitor_mac=data[6],idrac_ip=data[7],idrac_mac=data[8],rest_ip=data[9],memory=data[10],disk=data[11],cpu=data[12],server_model=data[13],system=data[14],bios_version=data[15],board_model=data[16],board_serial=data[17],item=data[18],service=data[19],port=data[20],admin=data[21],phone=data[22],motor=data[23],cabinet=data[24],pos=data[25],status=data[26],date_str=data[27],create_date_str=data[28],description=data[29])
+    return True,data_dict
+
 def sql_filter(data,table_name,op='insert'):
     if op.lower() == 'insert':
         sql = 'insert into ' + table_name + '('
