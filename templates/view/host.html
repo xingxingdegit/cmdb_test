@@ -6,10 +6,14 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
   </head>
     <script>
+      once = new Object()
       function edit(id,value) {
-          document.getElementById(id).innerHTML='<td><input type="text" name=' + id + ' value=' + value + ' ></td>';
+          if ( typeof(once[id]) == "undefined") {
+            document.getElementById(id).innerHTML='<td><input type="text" name=' + id + ' value=' + value + ' ></td>';
+          }
+          once[id] = id
       }
-        
+      
     </script>
 
   <body>

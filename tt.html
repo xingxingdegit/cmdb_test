@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title> 测试js </title>
   <script>
+    once = 1
     function test(key,value) {
       var abc = Object()
       abc.first="yang"
@@ -11,6 +12,12 @@
       if (abc[key] == value) alert("值相同，不会更新提交")
       else alert("值发生变化，确认提交")
     }
+   function tt() {
+     if (once == 1) {
+     document.getElementById("tt").innerHTML='<p><input type="text" value="abcdefg" /></p>'
+     }
+     once ++
+   }
   </script>
     
 </head>
@@ -19,6 +26,6 @@
   <p><input type="text" name="irst"></p>
   
 <table>
-</a>
+<p id="tt" onclick="tt()">abcdefg</p>
 </body>
 </html>
