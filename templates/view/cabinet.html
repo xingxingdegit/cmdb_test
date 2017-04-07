@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title> 编辑机柜 </title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+  </head>
+    <script>
+      once = new Object()
+      function edit(id,value) {
+          if ( typeof(once[id]) == "undefined") {
+            document.getElementById(id).innerHTML='<td><input type="text" name=' + id + ' value=' + value + ' ></td>';
+          }
+          once[id] = id;
+      }
+      
+    </script>
+
+  <body>
+    <div>
+      <form name="edit_cabinet" method="post">
+      <table class="midd_table" border="1">
+        <tr>
+          <td>机柜编号:</td><td id="cabinet" onclick="edit('cabinet','{{ cabinet }}')">{{ cabinet }}</td>
+          <td>机器数量:</td><td>{{ motor_cabinet_host }}</td>
+        </tr>
+        <tr>
+          <td>所属机房编号:</td><td id="motor" onclick="edit('motor','{{ motor }}')">{{ motor }}</td>
+          <td>所属机房名称:</td><td id="motorname" onclick="edit('motorname','{{ motorname }}')">{{motorname}}</td>
+        </tr>
+        <tr>
+          <td>机房中第几排:</td><td id="row" onclick="edit('row','{{ row }}')">{{ row }}</td>
+          <td>机房中第几列:</td><td id="col" onclick="edit('col','{{ col }}')">{{ col }}</td>
+        </tr>
+          <td>创建时间:</td><td>{{ create_date_str }}</td>
+          <td>最新修改时间:</td><td>{{ date_str }}</td>
+        </tr>
+        <tr>
+          <td>机柜高度:</td><td id="height" onclick="edit('height','{{ height }}')">{{ height }}</td>
+        </tr>
+        <tr>
+          <td>描述信息:</td><td id="description" colspan='3' onclick="edit('description','{{ description.decode('utf-8') }}')">{{ description.decode('utf-8') }}</td>
+        </tr>
+        <tr>
+          <td colspan="4"><input type="submit" value="更新"></td>
+      </table>
+      </form>
+      <div>
+        {% if exe_status %}
+          <p>{{ exe_info }}</p>
+        {% else %}
+          <p>{{ exe_info }}</p>
+        {% endif %}
+     </div>
+    </div>
+  </body>
+</html>

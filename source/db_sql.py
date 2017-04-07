@@ -37,28 +37,27 @@ def select_page_host(conn,page):
     rows = cur.fetchone()[0]
     page_per = config.PAGE_PER
     pages = math.ceil(rows / float(page_per))
+    if page > pages:
+        page = pages
+
 #three select style, first :if range of part from top is nearly. second: if range of part from end is nearly.  third : 最后一页, 是否正好一页.     
     if page == 1:
-        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str from dm_host order by dateline desc limit %d' % page_per
+        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from dm_host order by dateline desc limit %d' % page_per
 
     elif page <= (rows / 2):
-        first_select = page_per * (page + 1)
-        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str from (select * from (select * from dm_host order by dateline desc limit %d;) order by dateline limit %d;) order by dateline desc' % (first_select,page_per)
+        first_select = page_per * page
+        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from (select * from (select * from dm_host order by dateline desc limit %d)as a order by dateline limit %d)as b order by dateline desc' % (first_select,page_per)
     elif page == pages:
         end_page = rows % page_per
         if end_page:
-            sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str from dm_host order by dateline desc limit %d' % (end_page)
+            sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from dm_host order by dateline desc limit %d' % (end_page)
         else:
-            sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str from dm_host order by dateline desc limit %d' % (page_per)
+            sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from dm_host order by dateline desc limit %d' % (page_per)
     else:
         end_page = rows % page_per
         page = pages - page
-        if end_page:
-            first_select = page_per * (page) + end_page
-        else:
-            first_select = page_per * (page + 1)
-        first_select = page_per * (page + 1)
-        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str from (select * from dm_host order by dateline limit %d;) order by dateline desc limit %d)' % (first_select,page_per)
+        first_select = page_per * page + (end_page or page_per)
+        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from (select * from dm_host order by dateline limit %d)as a order by dateline desc limit %d)' % (first_select,page_per)
         
     try:
         cur.execute(sql)
@@ -66,7 +65,7 @@ def select_page_host(conn,page):
         id = 1
         data_list = []
         for row in data:
-            data_list.append(dict(id=id,hid=row[0],hostname=row[1],service_ip=row[2],data_ip=row[3],monitor_ip=row[4],item=row[5],service=row[6],system=row[7],admin=row[8],phone=row[9],status=row[10],data_str=row[11]))
+            data_list.append(dict(id=id,hid=row[0],hostname=row[1],service_ip=row[2],data_ip=row[3],monitor_ip=row[4],item=row[5],service=row[6],system=row[7],admin=row[8],phone=row[9],status=row[10],data_str=row[11],motor=row[12]))
             id += 1
 
     except Exception,err:
@@ -88,13 +87,15 @@ def select_page_cabinet(conn,page):
     rows = cur.fetchone()[0]
     page_per = config.PAGE_PER
     pages = math.ceil(rows / float(page_per))
+    if page > pages:
+        page = pages
 #three select style, first :if range of part from top is nearly. second: if range of part from end is nearly.  third : 最后一页, 是否正好一页.     
     if page == 1:
         sql = u'select cid,motor,cabinet,row,col,height,date_str from dm_cabinet order by dateline desc limit %d' % page_per
 
     elif page <= (rows / 2):
-        first_select = page_per * (page + 1)
-        sql = u'select cid,motor,cabinet,row,col,height,date_str from (select * from (select * from dm_cabinet order by dateline desc limit %d;) order by dateline limit %d;) order by dateline desc' % (first_select,page_per)
+        first_select = page_per * page
+        sql = u'select cid,motor,cabinet,row,col,height,date_str from (select * from (select * from dm_cabinet order by dateline desc limit %d)as a order by dateline limit %d)as b order by dateline desc' % (first_select,page_per)
     elif page == pages:
         end_page = rows % page_per
         if end_page:
@@ -104,12 +105,8 @@ def select_page_cabinet(conn,page):
     else:
         end_page = rows % page_per
         page = pages - page
-        if end_page:
-            first_select = page_per * (page) + end_page
-        else:
-            first_select = page_per * (page + 1)
-        first_select = page_per * (page + 1)
-        sql = u'select cid,motor,cabinet,row,col,height,date_str from (select * from dm_cabinet order by dateline limit %d;) order by dateline desc limit %d)' % (first_select,page_per)
+        first_select = page_per * page + (end_page or page_per)
+        sql = u'select cid,motor,cabinet,row,col,height,date_str from (select * from dm_cabinet order by dateline limit %d)as a order by dateline desc limit %d)' % (first_select,page_per)
         
     try:
         cur.execute(sql)
@@ -138,13 +135,15 @@ def select_page_motor(conn,page):
     rows = cur.fetchone()[0]
     page_per = config.PAGE_PER
     pages = math.ceil(rows / float(page_per))
+    if page > pages:
+        page = pages
 #three select style, first :if range of part from top is nearly. second: if range of part from end is nearly.  third : 最后一页, 是否正好一页.     
     if page == 1:
         sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from dm_motor order by dateline desc limit %d' % page_per
 
     elif page <= (rows / 2):
-        first_select = page_per * (page + 1)
-        sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from (select * from (select * from dm_motor order by dateline desc limit %d;) order by dateline limit %d;) order by dateline desc' % (first_select,page_per)
+        first_select = page_per * page
+        sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from (select * from (select * from dm_motor order by dateline desc limit %d) as a order by dateline limit %d) as b order by dateline desc' % (first_select,page_per)
     elif page == pages:
         end_page = rows % page_per
         if end_page:
@@ -154,12 +153,8 @@ def select_page_motor(conn,page):
     else:
         end_page = rows % page_per
         page = pages - page
-        if end_page:
-            first_select = page_per * (page) + end_page
-        else:
-            first_select = page_per * (page + 1)
-        first_select = page_per * (page + 1)
-        sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from (select * from dm_motor order by dateline limit %d;) order by dateline desc limit %d)' % (first_select,page_per)
+        first_select = page_per * page + (end_page or page_per)
+        sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from (select * from dm_motor order by dateline limit %d)as a order by dateline desc limit %d)' % (first_select,page_per)
         
     try:
         cur.execute(sql)
@@ -183,7 +178,7 @@ def insert_all_host(conn,data):
     data['create_date'] = dateline
     data['create_date_str'] = date_str
     data['dateline'] = dateline
-    data['date_str'] = dateline
+    data['date_str'] = date_str
     sql = sql_filter(data,'dm_host','insert')
 
     try:
@@ -206,7 +201,7 @@ def insert_all_motor(conn,data):
     data['create_date'] = dateline
     data['create_date_str'] = date_str
     data['dateline'] = dateline
-    data['date_str'] = dateline
+    data['date_str'] = date_str
     sql = sql_filter(data,'dm_motor','insert')
     try:
         cur = conn.cursor()
@@ -226,7 +221,7 @@ def insert_all_cabinet(conn,data):
     data['create_date'] = dateline
     data['create_date_str'] = date_str
     data['dateline'] = dateline
-    data['date_str'] = dateline
+    data['date_str'] = date_str
     sql = sql_filter(data,'dm_cabinet','insert')
 
     try:
@@ -246,14 +241,15 @@ def insert_all_cabinet(conn,data):
         return True,u'创建成功'
 
 def select_all_host(conn,hid):
-    sql = r'select hostname,service_ip,service_mac,data_ip,data_mac,monitor_ip,monitor_mac,idrac_ip,idrac_mac,rest_ip,memory,disk,cpu,server_model,system,bios_version,board_model,board_serial,item,service,port,admin,phone,motor,cabinet,pos,status,date_str,create_date_str,description from dm_host where hid = %s' % hid
+    sql = r'select host.hostname,host.service_ip,host.service_mac,host.data_ip,host.data_mac,host.monitor_ip,host.monitor_mac,host.idrac_ip,host.idrac_mac,host.rest_ip,host.memory,host.disk,host.cpu,host.server_model,host.system,host.bios_version,host.board_model,host.board_serial,host.item,host.service,host.port,host.admin,host.phone,host.motor,host.cabinet,host.pos,host.status,host.date_str,host.create_date_str,host.description,motor.motorname,cabinet.row,cabinet.col from dm_host as host,dm_motor as motor,dm_cabinet as cabinet where host.hid = %s and host.motor = motor.motor and host.cabinet = cabinet.cabinet and host.motor = cabinet.motor' % hid
+
     try:
         cur = conn.cursor()
         cur.execute(sql)
         data = cur.fetchone()
     except Exception,err:
         return False,err.message
-    data_dict = dict(hid=hid,hostname=data[0],service_ip=data[1],service_mac=data[2],data_ip=data[3],data_mac=data[4],monitor_ip=data[5],monitor_mac=data[6],idrac_ip=data[7],idrac_mac=data[8],rest_ip=data[9],memory=data[10],disk=data[11],cpu=data[12],server_model=data[13],system=data[14],bios_version=data[15],board_model=data[16],board_serial=data[17],item=data[18],service=data[19],port=data[20],admin=data[21],phone=data[22],motor=data[23],cabinet=data[24],pos=data[25],status=data[26],date_str=data[27],create_date_str=data[28],description=data[29])
+    data_dict = dict(hid=hid,hostname=data[0],service_ip=data[1],service_mac=data[2],data_ip=data[3],data_mac=data[4],monitor_ip=data[5],monitor_mac=data[6],idrac_ip=data[7],idrac_mac=data[8],rest_ip=data[9],memory=data[10],disk=data[11],cpu=data[12],server_model=data[13],system=data[14],bios_version=data[15],board_model=data[16],board_serial=data[17],item=data[18],service=data[19],port=data[20],admin=data[21],phone=data[22],motor=data[23],cabinet=data[24],pos=data[25],status=data[26],date_str=data[27],create_date_str=data[28],description=data[29],motorname=data[30],row=data[31],col=data[32])
     return True,data_dict
 
 def update_item(conn,id,table,data):

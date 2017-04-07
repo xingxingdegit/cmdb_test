@@ -24,9 +24,10 @@
         <td><a href="{{ url_for('add_item',filename='motor.html') }}" target="_self"> <input type="button" value="创建机房"></a>
         <td><input type="button" value="删除机房">
       </tr>
+    </table>
     <table class="midd_table" border="1">
       <tr>
-        <th>ID</th> <th>机房编号</th> <th>机房名称</th> <th>地址</th> <th>负责人</th> <th>电话</th> <th>创建日期</th>
+        <th>ID</th> <th>机房编号</th> <th>机房名称</th> <th>地址</th> <th>负责人</th> <th>电话</th> <th>机器数量</th> <th>创建日期</th>
       </tr>
 
       {% for row in motor_item %}
@@ -37,24 +38,42 @@
         <td>{{ row['address'].decode('utf-8') }}</td>
         <td>{{ row['admin'].decode('utf-8') }}</td>
         <td>{{ row['phone'].decode('utf-8') }}</td>     
+        <td>{{ row['motor_host'] }}</td>     
         <td>{{ row['create_date_str'].decode('utf-8') }}</td>
       </tr>
      {% endfor %}
     </table>
-    </div>
-    <div class="midd_container_bottom">
-      <table>
+    <br><br><hr><br>
+    <table class="page">
         <tr>
-        {% for i in range(1,pages+1) %}
-          {% if i > 10 %}
-             <td>...</td><td><input type="text" name="page"></td>
-             <td><input type="submit" value="跳转"></td><td>总共 {{pages}} 页</td>
+<!-- page_num 表示是第几个15页，来确定页面中的页数是从15的几倍开始。和开始的页数，结束的页数。  --!>
+        {% set page_num = page // 15 %}
+        {% if page % 15 != 0 %}
+          {% set page_num = page_num + 1 %}
+        {% endif %}
+        {% set end_for = page_num * 15 %}
+        {% set begin_for = end_for - 14 %}
+         
+<!-- 确定剩余页数够不够15页，不够就修改循环输出的页数到最后一页--!>
+        {% set over_page = pages - begin_for %}
+        {% if over_page < 15 %}
+          {% set end_for = pages %}
+        {% endif %}
+
+        {% for i in range(begin_for,end_for+1) %}
+          {% if page == i %}
+             <td><a class="pagem" href="motor?page={{ i }}" target="_self">{{i}}</a></td>
+          {% else %}
+            <td><a class="page" href="motor?page={{ i }}" target="_self">{{i}}</a></td>
           {% endif %}
-          {% if request.args.get('page') == i %}
-             <a href="motor?page={{ i }}" target="_self"><td style="color=#000000">{{i}}</td></a>
-          {% endif %}
-          <a href="motor?page={{ i }}" target="_self"><td>{{i}}</td></a>
         {% endfor %}
+
+        {% if pages > 10 %}
+           <form name="dump" action="motor" method="post">
+           <td>...</td><td><input type="text" name="page"></td>
+           <td><input type="submit" value="跳转"></td><td>总共 {{pages}} 页</td>
+           </form>
+        {% endif %}
         </tr>
      </table>
     </div>

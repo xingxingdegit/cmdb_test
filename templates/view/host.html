@@ -41,7 +41,14 @@
         </tr>
         <tr>
           <td>机房编号:</td><td id="motor" onclick="edit('motor','{{ motor }}')">{{ motor }}</td>
+          <td>机房名称:</td><td>{{ motorname.decode('utf-8') }}</td>
+        </tr>
+        <tr>
           <td>机柜编号:</td><td id="cabinet" onclick="edit('cabinet','{{ cabinet }}')">{{ cabinet }}</td>
+          <td>在机房中的位置:</td><td>{{ row }}排{{ col }}列</td>
+        </tr>
+        <tr>
+          <td>机器在机柜中的位置:</td><td id="pos" onclick="edit('pos','{{ pos }}')">{{ pos }}</td>
         </tr>
         <tr>
           <td>业务IP:</td><td id="service_ip" onclick="edit('service_ip','{{ service_ip }}')">{{ service_ip }}</td>
@@ -68,31 +75,31 @@
           <td>CPU:</td><td id="cpu" onclick="edit('cpu','{{ cpu }}')">{{ cpu }}</td>
         </tr>
         <tr>
-          <td>服务器型号:</td><td id="server_model" onclick="edit('server_model','{{ server_model }}')">{{ server_model }}</td>
+          <td>服务器型号:</td><td id="server_model" onclick="edit('server_model','{{ server_model.decode('utf-8') }}')">{{ server_model.decode('utf-8') }}</td>
           <td>系统版本:</td><td id="system" onclick="edit('system','{{ system }}')">{{ system }}</td>
         </tr>
         <tr>
           <td>BIOS版本:</td><td id="bios_version" onclick="edit('bios_version','{{ bios_version }}')">{{ bios_version }}</td>
-          <td>主板型号:</td><td id="board_model" onclick="edit('board_model','{{ board_model }}')">{{ board_model }}</td>
+          <td>主板型号:</td><td id="board_model" onclick="edit('board_model','{{ board_model.decode('utf-8') }}')">{{ board_model.decode('utf-8') }}</td>
         </tr>
         <tr>
           <td>主板序列号:</td><td id="board_serial" onclick="edit('board_serial','{{ board_serial }}')">{{ board_serial }}</td>
-          <td>所属项目:</td><td id="item" onclick="edit('item','{{ item }}')">{{ item }}</td>
+          <td>所属项目:</td><td id="item" onclick="edit('item','{{ item.decode('utf-8') }}')">{{ item.decode('utf-8') }}</td>
         </tr>
         <tr>
-          <td>服务类型:</td><td id="service" onclick="edit('service','{{ service }}')">{{ service }}</td>
+          <td>服务类型:</td><td id="service" onclick="edit('service','{{ service.decode('utf-8') }}')">{{ service.decode('utf-8') }}</td>
           <td>打开的端口:</td><td id="port" onclick="edit('port','{{ port }}')">{{ port }}</td>
         </tr>
         <tr>
-          <td>负责人:</td><td id="admin" onclick="edit('admin','{{ admin }}')">{{ admin }}</td>
+          <td>负责人:</td><td id="admin" onclick="edit('admin','{{ admin.decode('utf-8') }}')">{{ admin.decode('utf-8') }}</td>
           <td>电话:</td><td id="phone" onclick="edit('phone','{{ phone }}')">{{ phone }}</td>
         </tr>
         <tr>
-          <td>机柜中的位置:</td><td id="pos" onclick="edit('pos','{{ pos }}')">{{ pos }}</td>
-          <td>主机唯一ID:</td><td id="hid"><input type="text" name="hid" disabled="true" value="{{ hid }}"></td>
+          <td>创建时间:</td><td>{{ create_date_str }}</td>
+          <td>最新修改时间:</td><td>{{ date_str }}</td>
         </tr>
         <tr>
-          <td>描述信息:</td><td id="description" onclick="edit('description','{{ description.decode('utf-8') }}')">{{ description.decode('utf-8') }}</td>
+          <td>描述信息:</td><td id="description" colspan='3' onclick="edit('description','{{ description.decode('utf-8') }}')">{{ description.decode('utf-8') }}</td>
         </tr>
         <tr>
           <td colspan="4"><input type="submit" value="更新"></td>

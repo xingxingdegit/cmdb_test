@@ -55,27 +55,6 @@ def index():
         return render_template('index.html',username=name,status=u'已登录',frame_id=frame_id)
     return redirect(url_for('login'))
         
-@app.route('/host',methods=['GET','POST'])
-def host():
-#查看主机列表信息，分页显示
-    name = request.cookies.get('name')
-    if not check.check_login(name,g.redis,request.remote_addr):
-        return redirect(url_for('login'))
-    if request.method == 'GET':
-
-        host_item,pages = db_sql.select_page_host(g.db,request.args.get('page',1))
-        if host_item != False:
-            return render_template('host.html', host_item=host_item,pages=int(pages))
-        else:
-            return str(pages)
-#            abort(401)
-    else:
-        host_item,pages = db_sql.select_page(g.db,request.form('page',1))
-        if host_item:
-            return render_template('host.html', host_item=host_item,pages=pages)
-        else:
-            return pages
-
 @app.route("/add/<filename>",methods=['GET','POST'])
 def add_item(filename):
     #添加主机，机柜或机房。
@@ -85,18 +64,18 @@ def add_item(filename):
     if request.method == 'POST':
         if filename == 'host.html':
             data = dict(request.form.items())
-            status,info = db_sql.insert_all_host(g.db,data)
-            return render_template(url_for('add_item',filename=filename),status=status,info=info)
+            exe_status,exe_info = db_sql.insert_all_host(g.db,data)
+            return render_template(url_for('add_item',filename=filename),exe_status=exe_status,exe_info=exe_info)
     
         elif filename == 'motor.html':
             data = dict(request.form.items())
-            status,info = db_sql.insert_all_motor(g.db,data)
-            return render_template(url_for('add_item',filename=filename),status=status,info=info)
+            exe_status,exe_info = db_sql.insert_all_motor(g.db,data)
+            return render_template(url_for('add_item',filename=filename),exe_status=exe_status,exe_info=exe_info)
     
         elif filename == 'cabinet.html':
             data = dict(request.form.items())
-            status,info = db_sql.insert_all_cabinet(g.db,data)
-            return render_template(url_for('add_item',filename=filename),status=status,info=info)
+            exe_status,exe_info = db_sql.insert_all_cabinet(g.db,data)
+            return render_template(url_for('add_item',filename=filename),exe_status=exe_status,exe_info=exe_info)
         else:
             return u'添加的是不存在的项目'
 
@@ -133,9 +112,29 @@ def view_item(filename):
             else:
                 return str(data)
 
-
-
     return 'abcdefg'
+
+@app.route('/host',methods=['GET','POST'])
+def host():
+#查看主机列表信息，分页显示
+    name = request.cookies.get('name')
+    if not check.check_login(name,g.redis,request.remote_addr):
+        return redirect(url_for('login'))
+    if request.method == 'GET':
+        page = int(request.args.get('page',1))
+        host_item,pages = db_sql.select_page_host(g.db,page)
+        if host_item != False:
+            return render_template('host.html', host_item=host_item,pages=int(pages),page=page)
+        else:
+            return str(pages)
+#            abort(401)
+    else:
+        page = int(request.form.get('page',1))
+        host_item,pages = db_sql.select_page_host(g.db,page)
+        if host_item:
+            return render_template('host.html', host_item=host_item,pages=int(pages),page=page)
+        else:
+            return pages
 
 @app.route('/motor',methods=['GET','POST'])
 def motor():
@@ -143,17 +142,21 @@ def motor():
     name = request.cookies.get('name')
     if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
+
+    page = request.args.get('page',1)
     if request.method == 'GET':
-        motor_item,pages = db_sql.select_page_motor(g.db,request.args.get('page',1))
+        page = int(request.args.get('page',1))
+        motor_item,pages = db_sql.select_page_motor(g.db,page)
         if motor_item != False:
-            return render_template('motor.html', motor_item=motor_item,pages=int(pages))
+            return render_template('motor.html', motor_item=motor_item,pages=int(pages),page=page)
         else:
             return str(pages)
 #            abort(401)
     else:
-        motor_item,pages = db_sql.select_page(g.db,request.form('page',1))
-        if host_item:
-            return render_template('motor.html', motor_item=motor_item,pages=pages)
+        page = int(request.form.get('page',1))
+        motor_item,pages = db_sql.select_page_motor(g.db,page)
+        if motor_item:
+            return render_template('motor.html', motor_item=motor_item,pages=int(pages),page=page)
         else:
             return pages
 
@@ -165,16 +168,18 @@ def cabinet():
     if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
     if request.method == 'GET':
-        cabinet_item,pages = db_sql.select_page_cabinet(g.db,request.args.get('page',1))
+        page = int(request.args.get('page',1))
+        cabinet_item,pages = db_sql.select_page_cabinet(g.db,page)
         if cabinet_item != False:
-            return render_template('cabinet.html', cabinet_item=cabinet_item,pages=int(pages))
+            return render_template('cabinet.html', cabinet_item=cabinet_item,pages=int(pages),page=page)
         else:
             return str(pages)
 #            abort(401)
     else:
-        cabinet_item,pages = db_sql.select_page_cabinet(g.db,request.form('page',1))
-        if host_item:
-            return render_template('cabinet.html', cabinet_item=cabinet_item,pages=pages)
+        page = int(request.form.get('page',1))
+        cabinet_item,pages = db_sql.select_page_cabinet(g.db,page)
+        if cabinet_item:
+            return render_template('cabinet.html', cabinet_item=cabinet_item,pages=int(pages),page=page)
         else:
             return pages
 
