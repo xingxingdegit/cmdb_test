@@ -13,6 +13,13 @@
           }
           once[id] = id;
       }
+
+      function text(id,value) {
+          if ( typeof(once[id]) == "undefined") {
+            document.getElementById(id).innerHTML='<td><textarea name=' + id + ' rows="2" cols="130">' + value + '</textarea></td>';
+          }
+          once[id] = id;
+      }
       
     </script>
 
@@ -22,14 +29,14 @@
       <table class="midd_table" border="1">
         <tr>
           <td>机房编号:</td><td id="motor" onclick="edit('motor','{{ motor }}')">{{ motor }}</td>
-          <td>机房名称:</td><td id="motorname" onclick="edit('motoname','{{ motorname }}')">{{ motorname }}</td>
+          <td>机房名称:</td><td id="motorname" onclick="edit('motoname','{{ motorname.decode('utf-8') }}')">{{ motorname.decode('utf-8') }}</td>
         </tr>
         <tr>
-          <td>机房地址:</td><td id="address" onclick="edit('address','{{ address }}')">{{ address }}</td>
+          <td>机房地址:</td><td id="address" onclick="edit('address','{{ address.decode('utf-8') }}')">{{ address.decode('utf-8') }}</td>
           <td>主机数量:</td><td>{{ motor_host }}</td>
         </tr>
         <tr>
-          <td>管理员:</td><td id="admin" onclick="edit('admin','{{ admin }}')">{{ admin }}</td>
+          <td>管理员:</td><td id="admin" onclick="edit('admin','{{ admin.decode('utf-8') }}')">{{ admin.decode('utf-8') }}</td>
           <td>电话:</td><td id="phone" onclick="edit('phone','{{ phone }}')">{{ phone }}</td>
         </tr>
         <tr>
@@ -37,7 +44,8 @@
           <td>最新修改时间:</td><td>{{date_str}}</td>
         </tr>
         <tr>
-          <td>描述信息:</td><td id="description" colspan='3' onclick="edit('description','{{ description.decode('utf-8') }}')">{{ description.decode('utf-8') }}</td>
+          <td>描述信息:</td><td id="description" colspan='3' onclick="text('description','{{' '.join(description.split()).decode('utf-8')}}')">{{ description.decode('utf-8') }}</td>
+
         </tr>
         <tr>
           <td colspan="4"><input type="submit" value="更新"></td>

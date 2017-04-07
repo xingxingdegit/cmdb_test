@@ -13,6 +13,13 @@
           }
           once[id] = id;
       }
+      function text(id,value) {
+          if ( typeof(once[id]) == "undefined") {
+            document.getElementById(id).innerHTML='<td><textarea name=' + id + ' rows="2" cols="130">' + value + '</textarea></td>';
+          }
+          once[id] = id;
+      }
+
       
     </script>
 
@@ -26,7 +33,7 @@
         </tr>
         <tr>
           <td>所属机房编号:</td><td id="motor" onclick="edit('motor','{{ motor }}')">{{ motor }}</td>
-          <td>所属机房名称:</td><td id="motorname" onclick="edit('motorname','{{ motorname }}')">{{motorname}}</td>
+          <td>所属机房名称:</td><td>{{motorname.decode('utf-8')}}</td>
         </tr>
         <tr>
           <td>机房中第几排:</td><td id="row" onclick="edit('row','{{ row }}')">{{ row }}</td>
@@ -39,7 +46,7 @@
           <td>机柜高度:</td><td id="height" onclick="edit('height','{{ height }}')">{{ height }}</td>
         </tr>
         <tr>
-          <td>描述信息:</td><td id="description" colspan='3' onclick="edit('description','{{ description.decode('utf-8') }}')">{{ description.decode('utf-8') }}</td>
+          <td>描述信息:</td><td id="description" colspan='3' onclick="text('description','{{' '.join(description.split()).decode('utf-8')}}')">{{ description.decode('utf-8') }}</td> 
         </tr>
         <tr>
           <td colspan="4"><input type="submit" value="更新"></td>

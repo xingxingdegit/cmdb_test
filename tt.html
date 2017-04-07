@@ -18,12 +18,16 @@
      }
      once ++
    }
+   function cc(id,value) {
+     document.getElementById(id).innerHTML='<td><input width="200px" type="text" name=' + id + ' value=' + value + ' ></td>';
+   }
   </script>
     
 </head>
 <body>
   <p id="demo">这是一个JS函数测试</p>
   <p><input type="text" name="irst"></p>
+  <p id="abc" onclick="cc('abc',' 浪潮互联网大数据采集中心已经采集超过2PB数据，并已建立5大类数据分类处理算法。近日成功发布海量存储系统的最新代表产品AS130000。+')">点着</p>
   
 <table>
 <p id="tt" onclick="tt()">abcdefg</p>

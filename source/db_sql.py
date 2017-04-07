@@ -249,7 +249,34 @@ def select_all_host(conn,hid):
         data = cur.fetchone()
     except Exception,err:
         return False,err.message
-    data_dict = dict(hid=hid,hostname=data[0],service_ip=data[1],service_mac=data[2],data_ip=data[3],data_mac=data[4],monitor_ip=data[5],monitor_mac=data[6],idrac_ip=data[7],idrac_mac=data[8],rest_ip=data[9],memory=data[10],disk=data[11],cpu=data[12],server_model=data[13],system=data[14],bios_version=data[15],board_model=data[16],board_serial=data[17],item=data[18],service=data[19],port=data[20],admin=data[21],phone=data[22],motor=data[23],cabinet=data[24],pos=data[25],status=data[26],date_str=data[27],create_date_str=data[28],description=data[29],motorname=data[30],row=data[31],col=data[32])
+    data_dict = dict(hid=hid,hostname=data[0],service_ip=data[1],service_mac=data[2],data_ip=data[3],data_mac=data[4],monitor_ip=data[5],monitor_mac=data[6],idrac_ip=data[7],idrac_mac=data[8],rest_ip=data[9],memory=data[10],disk=data[11],cpu=data[12],server_model=data[13],system=data[14],bios_version=data[15],board_model=data[16],board_serial=data[17],item=data[18],service=data[19],port=data[20],admin=data[21],phone=data[22],motor=data[23],cabinet=data[24],pos=data[25],status=data[26],date_str=data[27],create_date_str=data[28],description=data[29] or '',motorname=data[30],row=data[31],col=data[32])
+    return True,data_dict
+
+def select_all_motor(conn,mid):
+    sql = r'select dm_motor.motor,motorname,address,admin,phone,date_str,create_date_str,description,host.motor_host from dm_motor left join (select motor,count(hid) as motor_host from dm_host group by motor) as host on dm_motor.motor = host.motor where dm_motor.mid = %s' % mid
+
+    try:
+        cur = conn.cursor()
+        cur.execute(sql)
+        data = cur.fetchone()
+    except Exception,err:
+        conn.rollback()
+        return False,err.message
+    data_dict = dict(mid=mid,motor=data[0],motorname=data[1],address=data[2],admin=data[3],phone=data[4],date_str=data[5],create_date_str=data[6],description=data[7] or '',motor_host=data[8] or 0)
+    return True,data_dict
+
+def select_all_cabinet(conn,cid):
+    sql = r'select dm_cabinet.motor,dm_cabinet.cabinet,row,col,height,date_str,create_date_str,description,motor_cabinet_host from dm_cabinet left join (select motor,cabinet,count(hid) as motor_cabinet_host from dm_host group by motor,cabinet) as host on dm_cabinet.motor = host.motor and dm_cabinet.cabinet = host.cabinet where cid = %s' % cid
+    try:
+        cur = conn.cursor()
+        cur.execute(sql)
+        data = cur.fetchone()
+        cur.execute('select motorname from dm_cabinet,dm_motor where dm_cabinet.motor = dm_motor.motor and dm_cabinet.cid = %s' % cid)
+    except Exception,err:
+        conn.rollback()
+        return False,err.message
+    data_dict = dict(cid=cid,motor=data[0],cabinet=data[1],row=data[2],col=data[3],height=data[4],date_str=data[5],create_date_str=data[6],description=data[7] or '',motor_cabinet_host=data[8] or 0)
+    data_dict['motorname'] = cur.fetchone()[0]
     return True,data_dict
 
 def update_item(conn,id,table,data):

@@ -99,6 +99,19 @@ def view_item(filename):
                 return render_template(url_for('view_item',filename=filename),**data)
             else:
                 return str(data)
+        elif filename == 'motor.html':
+            status,data = db_sql.select_all_motor(g.db,request.args.get('mid'))
+            if status:
+                return render_template(url_for('view_item',filename=filename),**data)
+            else:
+                return str(data)
+
+        elif filename == 'cabinet.html':
+            status,data = db_sql.select_all_cabinet(g.db,request.args.get('cid'))
+            if status:
+                return render_template(url_for('view_item',filename=filename),**data)
+            else:
+                return str(data)
     else:
         if filename == 'host.html':
             data = dict(request.form.items())
@@ -107,6 +120,27 @@ def view_item(filename):
             status,info = db_sql.update_item(g.db,id=hid,table='dm_host',data=data)
 #            return render_template(url_for('view_item',filename=filename))('?hid=%s' % hid),status=status,info=info)
             select_status,data = db_sql.select_all_host(g.db,hid)
+            if select_status:
+                return render_template(url_for('view_item',filename=filename),exe_status=status,exe_info=info,**data)
+            else:
+                return str(data)
+        elif filename == 'motor.html':
+            data = dict(request.form.items())
+            mid = request.args['mid']
+
+            status,info = db_sql.update_item(g.db,id=mid,table='dm_motor',data=data)
+            select_status,data = db_sql.select_all_motor(g.db,mid)
+            if select_status:
+                return render_template(url_for('view_item',filename=filename),exe_status=status,exe_info=info,**data)
+            else:
+                return str(data)
+
+        elif filename == 'cabinet.html':
+            data = dict(request.form.items())
+            cid = request.args['cid']
+
+            status,info = db_sql.update_item(g.db,id=cid,table='dm_cabinet',data=data)
+            select_status,data = db_sql.select_all_cabinet(g.db,cid)
             if select_status:
                 return render_template(url_for('view_item',filename=filename),exe_status=status,exe_info=info,**data)
             else:
