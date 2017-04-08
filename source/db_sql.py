@@ -44,7 +44,7 @@ def select_page_host(conn,page):
     if page == 1:
         sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from dm_host order by dateline desc limit %d' % page_per
 
-    elif page <= (rows / 2):
+    elif page <= (pages / 2):
         first_select = page_per * page
         sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from (select * from (select * from dm_host order by dateline desc limit %d)as a order by dateline limit %d)as b order by dateline desc' % (first_select,page_per)
     elif page == pages:
@@ -57,7 +57,7 @@ def select_page_host(conn,page):
         end_page = rows % page_per
         page = pages - page
         first_select = page_per * page + (end_page or page_per)
-        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from (select * from dm_host order by dateline limit %d)as a order by dateline desc limit %d)' % (first_select,page_per)
+        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from (select * from dm_host order by dateline limit %d)as a order by dateline desc limit %d' % (first_select,page_per)
         
     try:
         cur.execute(sql)
@@ -93,7 +93,7 @@ def select_page_cabinet(conn,page):
     if page == 1:
         sql = u'select cid,motor,cabinet,row,col,height,date_str from dm_cabinet order by dateline desc limit %d' % page_per
 
-    elif page <= (rows / 2):
+    elif page <= (pages / 2):
         first_select = page_per * page
         sql = u'select cid,motor,cabinet,row,col,height,date_str from (select * from (select * from dm_cabinet order by dateline desc limit %d)as a order by dateline limit %d)as b order by dateline desc' % (first_select,page_per)
     elif page == pages:
@@ -106,7 +106,7 @@ def select_page_cabinet(conn,page):
         end_page = rows % page_per
         page = pages - page
         first_select = page_per * page + (end_page or page_per)
-        sql = u'select cid,motor,cabinet,row,col,height,date_str from (select * from dm_cabinet order by dateline limit %d)as a order by dateline desc limit %d)' % (first_select,page_per)
+        sql = u'select cid,motor,cabinet,row,col,height,date_str from (select * from dm_cabinet order by dateline limit %d)as a order by dateline desc limit %d' % (first_select,page_per)
         
     try:
         cur.execute(sql)
@@ -141,7 +141,7 @@ def select_page_motor(conn,page):
     if page == 1:
         sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from dm_motor order by dateline desc limit %d' % page_per
 
-    elif page <= (rows / 2):
+    elif page <= (pages / 2):
         first_select = page_per * page
         sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from (select * from (select * from dm_motor order by dateline desc limit %d) as a order by dateline limit %d) as b order by dateline desc' % (first_select,page_per)
     elif page == pages:
@@ -154,7 +154,7 @@ def select_page_motor(conn,page):
         end_page = rows % page_per
         page = pages - page
         first_select = page_per * page + (end_page or page_per)
-        sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from (select * from dm_motor order by dateline limit %d)as a order by dateline desc limit %d)' % (first_select,page_per)
+        sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from (select * from dm_motor order by dateline limit %d)as a order by dateline desc limit %d' % (first_select,page_per)
         
     try:
         cur.execute(sql)

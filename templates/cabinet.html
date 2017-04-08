@@ -27,14 +27,14 @@
       </tr>
     <table class="midd_table" border="1">
       <tr>
-        <th>ID</th> <th>机房编号</th> <th>机柜</th> <th>第几排</th> <th>第几列</th><th>高度(u)</th> 
+        <th>ID</th> <th>机柜</th> <th>机房编号</th> <th>第几排</th> <th>第几列</th><th>高度(u)</th>
       </tr>
 
       {% for row in cabinet_item %}
       <tr onclick="view('{{row['cid']}}')">
         <td>{{ row['id'] }}</td>
-        <td>{{ row['motor'].decode('utf-8') }} </td>
         <td>{{ row['cabinet'].decode('utf-8') }}</td>
+        <td>{{ row['motor'].decode('utf-8') }} </td>
         <td>{{ row['row'].decode('utf-8') }}</td>
         <td>{{ row['col'].decode('utf-8') }}</td>     
         <td>{{ row['height'].decode('utf-8') }}</td>     

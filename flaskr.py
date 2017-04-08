@@ -89,6 +89,7 @@ def add_item(filename):
 
 @app.route("/view/<filename>",methods=['GET','POST'])
 def view_item(filename):
+#查看详细信息或编辑.
     name = request.cookies.get('name')
     if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
@@ -163,7 +164,10 @@ def host():
             return str(pages)
 #            abort(401)
     else:
-        page = int(request.form.get('page',1))
+        try:
+            page = int(request.form.get('page',1))
+        except ValueError,err:
+            page = 1
         host_item,pages = db_sql.select_page_host(g.db,page)
         if host_item:
             return render_template('host.html', host_item=host_item,pages=int(pages),page=page)
@@ -187,7 +191,10 @@ def motor():
             return str(pages)
 #            abort(401)
     else:
-        page = int(request.form.get('page',1))
+        try:
+            page = int(request.form.get('page',1))
+        except ValueError,err:
+            page = 1
         motor_item,pages = db_sql.select_page_motor(g.db,page)
         if motor_item:
             return render_template('motor.html', motor_item=motor_item,pages=int(pages),page=page)
@@ -210,7 +217,10 @@ def cabinet():
             return str(pages)
 #            abort(401)
     else:
-        page = int(request.form.get('page',1))
+        try:
+            page = int(request.form.get('page',1))
+        except ValueError,err:
+            page = 1
         cabinet_item,pages = db_sql.select_page_cabinet(g.db,page)
         if cabinet_item:
             return render_template('cabinet.html', cabinet_item=cabinet_item,pages=int(pages),page=page)
