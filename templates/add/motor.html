@@ -4,12 +4,18 @@
     <meta charset="utf-8">
     <title> 创建机房 </title>
     <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+    <script>
+        function decideForm() {
+            var motor=document.forms["add_item"]["motor"].value
+            if (motor==null || motor=="") { alert("机房编号不能为空"); return false;}
+        }
+    </script>
   </head>
 
   <body>
     <div>
       <table class="midd_table" border="1">
-      <form name="add_motor" action="{{ url_for('add_item',filename='motor.html') }}" method="post">
+      <form name="add_item" action="{{ url_for('add_item',filename='motor.html') }}" onsubmit="return decideForm()" method="post">
         <tr>
           <td>机房编号:</td>
           <td id="motor"><input type="text" name="motor"></td>

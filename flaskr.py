@@ -40,7 +40,8 @@ def static_(filename):
             content_type = 'text/html'
         else: content_type = 'text/' + extname
     elif extname in application:
-        content_type = 'application/javascript'
+#        content_type = 'application/javascript'
+        content_type = 'text/javascript'
         
     with open('static/' + filename) as fd:
          resp = make_response(fd.read())
