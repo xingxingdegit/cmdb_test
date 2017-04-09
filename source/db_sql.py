@@ -301,4 +301,24 @@ def update_item(conn,id,table,data):
         conn.commit()
         return True,u'更新完成'
 
+def search_host(conn,data,page):
+    sql = 'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from dm_host where true'
+    for key,value in data.items():
+        if value.strip():
+            sql = sql + ' and ' + key + '=' + "'" + value + "'"
+    
+    try:
+        cur = conn.cursor()
+        cur.execute(sql)
+        data = cur.fetchall()
+        pages = len(data)
+        id = 1
+        data_list = []
+        for row in data:
+            data_list.append(dict(id=id,hid=row[0],hostname=row[1],service_ip=row[2],data_ip=row[3],monitor_ip=row[4],item=row[5],service=row[6],system=row[7],admin=row[8],phone=row[9],status=row[10],data_str=row[11],motor=row[12]))
+            id += 1
 
+    except Exception,err:
+        return False,err.message
+    else:
+        return data_list,pages

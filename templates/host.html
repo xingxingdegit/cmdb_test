@@ -15,7 +15,7 @@
     <div class="midd_container_left">
     <table>
       <tr>
-      <form name="search_host" action="search" method="get">
+      <form name="search_host" action="{{ url_for('search',filename='host') }}" method="get">
         <td>服务</td><td><input type="text" name="service"></td>
         <td>主机名</td><td><input type="text" name="hostname"></td>
         <td>IP</td><td><input type="text" name="ip"></td>

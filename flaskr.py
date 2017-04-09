@@ -228,6 +228,25 @@ def cabinet():
         else:
             return pages
 
+@app.route('/search/<filename>')
+def search(filename):
+    name = request.cookies.get('name')
+    if not check.check_login(name,g.redis,request.remote_addr):
+        return redirect(url_for('login'))
+    try:
+        page = page
+    except NameError,err:
+        page = 1
+    if filename == "host":
+        data = dict(request.args.items())
+        host_item,pages = db_sql.search_host(g.db,data,page)
+        if host_item:
+            return render_template('host.html', host_item=host_item,pages=pages,page=page)
+        else:
+            return str(pages)
+        
+    
+
 
 @app.route('/login',methods=['GET','POST'])
 def login():
