@@ -16,23 +16,33 @@
     <table>
       <form name="search_host" action="{{ url_for('search',filename='host.html') }}" method="get">
       <tr>
-        <td>服务</td><td><input type="text" name="service"></td>
-        <td>主机名</td><td><input type="text" name="hostname"></td>
-        <td>IP</td><td><input type="text" name="ip"></td>
+        <td>服务</td><td><input type="text" name="service" value="{{search['service_ip']}}"></td>
+        <td>主机名</td><td><input type="text" name="hostname" value="{{search['hostname']}}"></td>
+        <td>IP</td><td><input type="text" name="ip" value="{{search['ip']}}"></td>
         <td rowspan="2"><input type="submit" value="搜索">
 
         <td rowspan="2"><a href="{{ url_for('add_item',filename='host.html') }}" target="_self"> <input type="button" value="创建主机"></a>
         <td rowspan="2"><input type="button" value="删除主机">
       </tr>
       <tr>
-        <td>机房编号</td><td><input type="text" name="motor"></td>
-        <td>所属项目</td><td><input type="text" name="item"></td>
+        <td>机房编号</td><td><input type="text" name="motor" value="{{search['motor']}}"></td>
+        <td>所属项目</td><td><input type="text" name="item" value="{{search['item']}}"></td>
         <td>运行状态</td>  <td>
-        <select name="status">
-          <option value="在线">在线</option>
-          <option value="离线">离线</option>
-          <option value="故障">故障</option>
-        </select> </td>
+            <select name="status">
+              {% if '在线' in search['status'] %}
+                  <option value="在线" selected>在线</option>
+                  <option value="离线">离线</option>
+                  <option value="故障">故障</option>
+              {% elif '故障' in search['status'] %}
+                  <option value="在线">在线</option>
+                  <option value="离线">离线</option>
+                  <option value="故障" selected>故障</option>
+              {% else %}
+                  <option value="在线">在线</option>
+                  <option value="离线" selected>离线</option>
+                  <option value="故障">故障</option>
+              {% endif %}
+            </select> </td>
       </form>
     <table class="midd_table" border="1">
       <tr>
@@ -56,7 +66,7 @@
       </tr>
       {% endfor %}
     </table>
-    <br><br><hr><br>
+    <br><hr><br>
     <table class="page">
       <tr>
 <!-- page_num 表示是第几个15页，来确定页面中的页数是从15的几倍开始。和开始的页数，结束的页数。比如第一页 // 15 得0,第0个15页，显示的时候会显示1-15的页表  --!>
@@ -75,17 +85,23 @@
 
         {% for i in range(begin_for,end_for+1) %}
           {% if page == i %}
-             <td><a class="pagem" href="{{url_for('host')}}?page={{ i }}" target="_self">{{i}}</a></td>
+             <td><a class="pagem" href="{{url_for('search',filename='host.html')}}?page={{ i }}&service={{search['service_ip']}}&hostname={{search['hostname']}}&ip={{search['ip']}}&motor={{search['motor']}}&item={{search['item']}}&status={{search['status']}}" target="_self">{{i}}</a></td>
           {% else %}
-            <td><a class="page" href="{{url_for('host')}}?page={{ i }}" target="_self">{{i}}</a></td>
+             <td><a class="page" href="{{url_for('search',filename='host.html')}}?page={{ i }}&service={{search['service_ip']}}&hostname={{search['hostname']}}&ip={{search['ip']}}&motor={{search['motor']}}&item={{search['item']}}&status={{search['status']}}" target="_self">{{i}}</a></td>
           {% endif %}
         {% endfor %}
 
-        {% if pages > 10 %}
-           <form name="dump" action="host" method="post">
-           <td>...</td><td><input type="text" name="page"></td>
-           <td><input type="submit" value="跳转"></td><td>总共 {{pages}} 页</td><td>{{rows}}台主机</td>
-           </form>
+        {% if pages > 0 %}
+         <form name="dump" action="{{url_for('search',filename='host.html')}}" method="post">
+         <td>...</td><td><input type="text" name="page"></td>
+         <td><input type="submit" value="跳转"></td><td>总共 {{pages}} 页</td><td>{{rows}}台主机</td>
+         <input type="hidden" name="service" value="{{search['service_ip']}}">
+         <input type="hidden" name="hostname" value="{{search['hostname']}}">
+         <input type="hidden" name="ip" value="{{search['ip']}}">
+         <input type="hidden" name="motor" value="{{search['motor']}}">
+         <input type="hidden" name="item" value="{{search['item']}}">
+         <input type="hidden" name="status" value="{{search['status']}}">
+         </form>
         {% endif %}
        </tr>
      </table>

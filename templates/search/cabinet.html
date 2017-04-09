@@ -15,7 +15,7 @@
     <div class="midd_container_left">
     <table>
       <tr>
-      <form name="search_host" action="{{url_for('search',filename='cabinet.html')}}" method="get">
+      <form name="search_cabinet" action="{{url_for('search',filename='cabinet.html')}}" method="get">
         <td>机房编号</td><td><input type="text" name="motor"></td>
         <td>机柜编号</td><td><input type="text" name="cabinet"></td>
         <td>机柜高度</td><td><input type="text" name="height"></td>
@@ -60,14 +60,14 @@
 
         {% for i in range(begin_for,end_for+1) %}
           {% if page == i %}
-             <td><a class="pagem" href="{{url_for('cabinet')}}?page={{ i }}" target="_self">{{i}}</a></td>
+             <td><a class="pagem" href="cabinet?page={{ i }}" target="_self">{{i}}</a></td>
           {% else %}
-            <td><a class="page" href="{{url_for('cabinet')}}?page={{ i }}" target="_self">{{i}}</a></td>
+            <td><a class="page" href="cabinet?page={{ i }}" target="_self">{{i}}</a></td>
           {% endif %}
         {% endfor %}
 
         {% if pages > 10 %}
-           <form name="dump" action="{{url_for('cabinet')}}" method="post">
+           <form name="dump" action="cabinet" method="post">
            <td>...</td><td><input type="text" name="page"></td>
            <td><input type="submit" value="跳转"></td><td>总共 {{pages}} 页</td><td>{{rows}}台机柜</td>
            </form>

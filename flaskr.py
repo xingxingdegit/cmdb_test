@@ -228,38 +228,41 @@ def cabinet():
         else:
             return pages
 
-@app.route('/search/<filename>')
+@app.route('/search/<filename>',methods=['GET','POST'])
 def search(filename):
     name = request.cookies.get('name')
     if not check.check_login(name,g.redis,request.remote_addr):
         return redirect(url_for('login'))
     if request.method == 'GET':
-        #与只是显示不同的是，get的参数里面除了有页码以外还有要搜索的东西。所以要获得页码以后从字典删除。request.argx是不可变的，所以复制到字典里。
-        try:
-            data = dict(request.args.items())
-            page = int(data.pop('page',1))
-        except ValueError,err:
-            page = 1
-        if filename == "host":
-            host_item,pages,rows = db_sql.search_host(g.db,data,page)
-            if host_item != False:
-                return render_template('host.html', host_item=host_item,pages=int(pages),page=page,rows=rows)
-            else:
-                return unicode(pages)
-        
-        elif filename == "motor":
-            motor_item,pages,rows = db_sql.search_motor(g.db,data,page)
-            if motor_item != False:
-                return render_template('motor.html', motor_item=motor_item,pages=int(pages),page=page,rows=rows)
-            else:
-                return unicode(pages)
+        data = dict(request.args.items())
+    else:
+        data = dict(request.form.items())
+        #与只是显示不同的是，get或post的参数里面除了有页码以外还有要搜索的东西。所以要获得页码以后从字典删除。request.argx是不可变的，所以复制到字典里。
+    try:
+        page = int(data.pop('page',1))
+    except ValueError,err:
+        page = 1
+    if filename == "host.html":
+        host_item,pages,rows = db_sql.search_host(g.db,data,page)
+        if host_item != False:
+            return render_template('search/host.html', host_item=host_item,pages=int(pages),page=page,rows=rows,search=data)
+        else:
+            return unicode(pages)
+    
+    elif filename == "motor.html":
+        motor_item,pages,rows = db_sql.search_motor(g.db,data,page)
+        if motor_item != False:
+#            return unicode(motor_item)
+            return render_template('search/motor.html', motor_item=motor_item,pages=int(pages),page=page,rows=rows,search=data)
+        else:
+            return unicode(pages)
 
-        elif filename == "cabinet":
-            cabinet_item,pages,rows = db_sql.search_cabinet(g.db,data,page)
-            if cabinet_item != False:
-                return render_template('cabinet.html', cabinet_item=cabinet_item,pages=int(pages),page=page,rows=rows)
-            else:
-                return unicode(pages)
+    elif filename == "cabinet.html":
+        cabinet_item,pages,rows = db_sql.search_cabinet(g.db,data,page)
+        if cabinet_item != False:
+            return render_template('search/cabinet.html', cabinet_item=cabinet_item,pages=int(pages),page=page,rows=rows,search=data)
+        else:
+            return unicode(pages)
     
 
 

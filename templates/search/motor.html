@@ -16,9 +16,9 @@
     <table>
       <tr>
       <form name="search_motor" action="{{url_for('search',filename='motor.html')}}" method="get">
-        <td>机房编号</td><td><input type="text" name="motor"></td>
-        <td>机房名称</td><td><input type="text" name="motorname"></td>
-        <td>地址</td><td><input type="text" name="address"></td>
+        <td>机房编号</td><td><input type="text" name="motor" value={{search['motor']}}></td>
+        <td>机房名称</td><td><input type="text" name="motorname" value={{search['motorname']}}></td>
+        <td>地址</td><td><input type="text" name="address" value={{search['address']}}></td>
         <td rowspan='2'><input type="submit" value="搜索">
       </form>
 
@@ -63,16 +63,19 @@
 
         {% for i in range(begin_for,end_for+1) %}
           {% if page == i %}
-             <td><a class="pagem" href="{{url_for('motor')}}?page={{ i }}" target="_self">{{i}}</a></td>
+             <td><a class="pagem" href="{{url_for('search',filename='motor.html')}}?page={{ i }}&motor={{search['motor']}}&motorname={{search['motorname']}}&address={{search['address']}}" target="_self">{{i}}</a></td>
           {% else %}
-            <td><a class="page" href="{{url_for('motor')}}?page={{ i }}" target="_self">{{i}}</a></td>
+             <td><a class="page" href="{{url_for('search',filename='motor.html')}}?page={{ i }}&motor={{search['motor']}}&motorname={{search['motorname']}}&address={{search['address']}}" target="_self">{{i}}</a></td>
           {% endif %}
         {% endfor %}
 
-        {% if pages > 10 %}
-           <form name="dump" action="{{url_for('motor')}}" method="post">
+        {% if pages > 0 %}
+           <form name="dump" action="{{url_for('search',filename='motor.html')}}" method="post">
            <td>...</td><td><input type="text" name="page"></td>
            <td><input type="submit" value="跳转"></td><td>总共 {{pages}} 页</td><td>{{rows}}个机房</td>
+           <input type="hidden" name="motor" value="{{search['motor']}}">
+           <input type="hidden" name="motorname" value="{{search['motorname']}}">
+           <input type="hidden" name="address" value="{{search['address']}}">
            </form>
         {% endif %}
         </tr>
