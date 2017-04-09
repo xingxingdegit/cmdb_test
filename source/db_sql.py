@@ -23,11 +23,12 @@ def sql_filter(data,table,op):
     return sql
 
 
-def select_page_host(conn,page):
-    #根据请求页数，获取数据，并返回数据数典和总的页数。 如果有问题，则返回 False和错误信息。
+def select_page_host(conn,page,where='true'):
+    #根据请求页数，获取数据，并返回数据数典和总的页数。 如果有问题，则返回 False和错误信息。 postgresql里面true为真，相当于没有加条件. 用于在作搜索的时候，传递条件.
     try:
         cur = conn.cursor()
-        cur.execute(r'select count(hid) from dm_host')
+        pages_sql = r'select count(hid) from dm_host where %s' % where
+        cur.execute(pages_sql)
     except Exception,err:
         return False,err.message
     try:
@@ -35,6 +36,9 @@ def select_page_host(conn,page):
     except: page = 1
 
     rows = cur.fetchone()[0]
+    #在没有匹配的记录，随便返回一些空数据，不能是False。
+    if rows == 0: return {},0,None
+#    return False,str(rows)
     page_per = config.PAGE_PER
     pages = math.ceil(rows / float(page_per))
     if page > pages:
@@ -42,22 +46,22 @@ def select_page_host(conn,page):
 
 #three select style, first :if range of part from top is nearly. second: if range of part from end is nearly.  third : 最后一页, 是否正好一页.     
     if page == 1:
-        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from dm_host order by dateline desc limit %d' % page_per
+        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from dm_host where %s order by dateline desc limit %d' % (where,page_per)
 
     elif page <= (pages / 2):
         first_select = page_per * page
-        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from (select * from (select * from dm_host order by dateline desc limit %d)as a order by dateline limit %d)as b order by dateline desc' % (first_select,page_per)
+        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from (select * from (select * from dm_host where %s order by dateline desc limit %d)as a order by dateline limit %d)as b order by dateline desc' % (where,first_select,page_per)
     elif page == pages:
         end_page = rows % page_per
         if end_page:
-            sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from dm_host order by dateline desc limit %d' % (end_page)
+            sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from dm_host where %s order by dateline desc limit %d' % (where,end_page)
         else:
-            sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from dm_host order by dateline desc limit %d' % (page_per)
+            sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from dm_host where %s order by dateline desc limit %d' % (where,page_per)
     else:
         end_page = rows % page_per
         page = pages - page
         first_select = page_per * page + (end_page or page_per)
-        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from (select * from dm_host order by dateline limit %d)as a order by dateline desc limit %d' % (first_select,page_per)
+        sql = u'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from (select * from dm_host where %s order by dateline limit %d)as a order by dateline desc limit %d' % (where,first_select,page_per)
         
     try:
         cur.execute(sql)
@@ -69,15 +73,16 @@ def select_page_host(conn,page):
             id += 1
 
     except Exception,err:
-        return False,err.message
+        return False,err.message,None
     else:
-        return data_list,pages
+        return data_list,pages,rows
 
-def select_page_cabinet(conn,page):
+def select_page_cabinet(conn,page,where='true'):
     #根据请求页数，获取数据，并返回数据数典和总的页数。 如果有问题，则返回 False和错误信息。
     try:
         cur = conn.cursor()
-        cur.execute(r'select count(cid) from dm_cabinet')
+        pages_sql = r'select count(cid) from dm_cabinet where %s' % where
+        cur.execute(pages_sql)
     except Exception,err:
         return False,err.message
     try:
@@ -85,28 +90,30 @@ def select_page_cabinet(conn,page):
     except: page = 1
 
     rows = cur.fetchone()[0]
+    #在没有匹配的记录，随便返回一些空数据，不能是False。
+    if rows == 0: return {},0,None
     page_per = config.PAGE_PER
     pages = math.ceil(rows / float(page_per))
     if page > pages:
         page = pages
 #three select style, first :if range of part from top is nearly. second: if range of part from end is nearly.  third : 最后一页, 是否正好一页.     
     if page == 1:
-        sql = u'select cid,motor,cabinet,row,col,height,date_str from dm_cabinet order by dateline desc limit %d' % page_per
+        sql = u'select cid,motor,cabinet,row,col,height,date_str from dm_cabinet where %s order by dateline desc limit %d' % (where,page_per)
 
     elif page <= (pages / 2):
         first_select = page_per * page
-        sql = u'select cid,motor,cabinet,row,col,height,date_str from (select * from (select * from dm_cabinet order by dateline desc limit %d)as a order by dateline limit %d)as b order by dateline desc' % (first_select,page_per)
+        sql = u'select cid,motor,cabinet,row,col,height,date_str from (select * from (select * from dm_cabinet where %s order by dateline desc limit %d)as a order by dateline limit %d)as b order by dateline desc' % (where,first_select,page_per)
     elif page == pages:
         end_page = rows % page_per
         if end_page:
-            sql = u'select cid,motor,cabinet,row,col,height,date_str from dm_cabinet order by dateline desc limit %d' % (end_page)
+            sql = u'select cid,motor,cabinet,row,col,height,date_str from dm_cabinet where %s order by dateline desc limit %d' % (where,end_page)
         else:
-            sql = u'select cid,motor,cabinet,row,col,height,date_str from dm_cabinet order by dateline desc limit %d' % (page_per)
+            sql = u'select cid,motor,cabinet,row,col,height,date_str from dm_cabinet where %s order by dateline desc limit %d' % (where,page_per)
     else:
         end_page = rows % page_per
         page = pages - page
         first_select = page_per * page + (end_page or page_per)
-        sql = u'select cid,motor,cabinet,row,col,height,date_str from (select * from dm_cabinet order by dateline limit %d)as a order by dateline desc limit %d' % (first_select,page_per)
+        sql = u'select cid,motor,cabinet,row,col,height,date_str from (select * from dm_cabinet where %s order by dateline limit %d)as a order by dateline desc limit %d' % (where,first_select,page_per)
         
     try:
         cur.execute(sql)
@@ -117,15 +124,16 @@ def select_page_cabinet(conn,page):
             data_list.append(dict(id=id,cid=row[0],motor=row[1],cabinet=row[2],row=row[3],col=row[4],height=row[5],date_str=row[6]))
             id += 1
     except Exception,err:
-        return False,err.message
+        return False,err.message,None
     else:
-        return data_list,pages
+        return data_list,pages,rows
 
-def select_page_motor(conn,page):
+def select_page_motor(conn,page,where='true'):
     #根据请求页数，获取数据，并返回数据数典和总的页数。 如果有问题，则返回 False和错误信息。
     try:
         cur = conn.cursor()
-        cur.execute(r'select count(mid) from dm_motor')
+        pages_sql = r'select count(mid) from dm_motor where %s' % where
+        cur.execute(pages_sql)
     except Exception,err:
         return False,err.message
     try:
@@ -133,28 +141,30 @@ def select_page_motor(conn,page):
     except: page = 1
 
     rows = cur.fetchone()[0]
+    #在没有匹配的记录，随便返回一些空数据，不能是False。
+    if rows == 0: return {},0,None
     page_per = config.PAGE_PER
     pages = math.ceil(rows / float(page_per))
     if page > pages:
         page = pages
 #three select style, first :if range of part from top is nearly. second: if range of part from end is nearly.  third : 最后一页, 是否正好一页.     
     if page == 1:
-        sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from dm_motor order by dateline desc limit %d' % page_per
+        sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from dm_motor where %s order by dateline desc limit %d' % (where,page_per)
 
     elif page <= (pages / 2):
         first_select = page_per * page
-        sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from (select * from (select * from dm_motor order by dateline desc limit %d) as a order by dateline limit %d) as b order by dateline desc' % (first_select,page_per)
+        sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from (select * from (select * from dm_motor where %s order by dateline desc limit %d) as a order by dateline limit %d) as b order by dateline desc' % (where,first_select,page_per)
     elif page == pages:
         end_page = rows % page_per
         if end_page:
-            sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from dm_motor order by dateline desc limit %d' % (end_page)
+            sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from dm_motor where %s order by dateline desc limit %d' % (where,end_page)
         else:
-            sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from dm_motor order by dateline desc limit %d' % (page_per)
+            sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from dm_motor where %s order by dateline desc limit %d' % (where,page_per)
     else:
         end_page = rows % page_per
         page = pages - page
         first_select = page_per * page + (end_page or page_per)
-        sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from (select * from dm_motor order by dateline limit %d)as a order by dateline desc limit %d' % (first_select,page_per)
+        sql = u'select mid,motor,motorname,address,admin,phone,create_date_str from (select * from dm_motor where %s order by dateline limit %d)as a order by dateline desc limit %d' % (where,first_select,page_per)
         
     try:
         cur.execute(sql)
@@ -169,9 +179,9 @@ def select_page_motor(conn,page):
             id += 1 
 
     except Exception,err:
-        return False,err.message
+        return False,err.message,None
     else:
-        return data_list,pages
+        return data_list,pages,rows
 
 def insert_all_host(conn,data):
     dateline,date_str = time_format.time_now()
@@ -302,23 +312,37 @@ def update_item(conn,id,table,data):
         return True,u'更新完成'
 
 def search_host(conn,data,page):
-    sql = 'select hid,hostname,service_ip,data_ip,monitor_ip,item,service,system,admin,phone,status,date_str,motor from dm_host where true'
+#这里的true只是用来占位，方便下面sql语句中的and添加。
+    where = 'true'
+    if 'ip' in data:
+        if data['ip'].strip():
+            ip = data.pop('ip')
+            where = "(service_ip='%s' or data_ip='%s' or monitor_ip='%s' or rest_ip='%s')" % (ip,ip,ip,ip)
+
     for key,value in data.items():
         if value.strip():
-            sql = sql + ' and ' + key + '=' + "'" + value + "'"
-    
-    try:
-        cur = conn.cursor()
-        cur.execute(sql)
-        data = cur.fetchall()
-        pages = len(data)
-        id = 1
-        data_list = []
-        for row in data:
-            data_list.append(dict(id=id,hid=row[0],hostname=row[1],service_ip=row[2],data_ip=row[3],monitor_ip=row[4],item=row[5],service=row[6],system=row[7],admin=row[8],phone=row[9],status=row[10],data_str=row[11],motor=row[12]))
-            id += 1
+            where = where + ' and ' + key + '=' + "'" + value + "'"
+#            where = where + ' and ' + key + ' like ' + "'" + '%' + value + '%' + "'"
+    data_dict,pages,rows = select_page_host(conn,page,where)
+    return data_dict,pages,rows
 
-    except Exception,err:
-        return False,err.message
-    else:
-        return data_list,pages
+def search_motor(conn,data,page):
+#这里的true只是用来占位，方便下面sql语句中的and添加。
+    where = 'true'
+    for key,value in data.items():
+        if value.rstrip():
+#            where = where + ' and ' + key + '=' + "'" + value + "'"
+            where = where + ' and ' + key + ' like ' + "'" + '%' + value + '%' + "'"
+    data_dict,pages,rows = select_page_motor(conn,page,where)
+    #return False,data_dict,None
+    return data_dict,pages,rows
+
+def search_cabinet(conn,data,page):
+#这里的true只是用来占位，方便下面sql语句中的and添加。
+    where = 'true'
+    for key,value in data.items():
+        if value.strip():
+#            where = where + ' and ' + key + '=' + "'" + value + "'"
+            where = where + ' and ' + key + ' like ' + "'" + '%' + value + '%' + "'"
+    data_dict,pages,rows = select_page_cabinet(conn,page,where)
+    return data_dict,pages,rows
