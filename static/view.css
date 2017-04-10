@@ -1,0 +1,5 @@
+html,p                   {font-family:"宋体",serif,Times;font-weight:600;font-size:1em;}
+tr                      {height:35px;}
+
+table.content         {border-collapse:collapse;width:100%;font-weight:600;font-size:1.1em;border-style:ridge;border-color:#798df2;}
+div.info              {font-size:1.3em;}

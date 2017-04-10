@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title> 创建机柜 </title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='view.css') }}">
     <script>
         function decideForm() {
             var motor=document.forms["add_item"]["motor"].value
@@ -15,8 +15,8 @@
   </head>
 
   <body>
-    <div>
-      <table class="midd_table" border="1">
+    <div class="content">
+      <table class="content" border="1">
       <form name="add_item" action="{{ url_for('add_item',filename='cabinet.html') }}" onsubmit="return decideForm()" method="post">
         <tr>
           <td>机房编号:</td>
@@ -43,7 +43,7 @@
         </tr>
       <form>
     </table>
-      <div>
+      <div class="content">
         {% if exe_status %}
           <p>{{ exe_info }}</p>
         {% else %}

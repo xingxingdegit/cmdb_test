@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <title> 编辑机房 </title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='view.css') }}">
     <script src="/static/view.js" type="text/javascript"></script>
   </head>
 
   <body>
-    <div>
+    <div class="content">
       <form name="edit_motor" method="post">
-      <table class="midd_table" border="1">
+      <table class="content" border="1">
         <tr>
           <td>机房编号:</td><td id="motor" onclick="edit('motor','{{ motor }}')">{{ motor }}</td>
           <td>机房名称:</td><td id="motorname" onclick="edit('motoname','{{ motorname.decode('utf-8') }}')">{{ motorname.decode('utf-8') }}</td>
@@ -35,7 +35,7 @@
           <td colspan="4"><input type="submit" value="更新"></td>
       </table>
       </form>
-      <div>
+      <div class="content">
         {% if exe_status %}
           <p>{{ exe_info }}</p>
         {% else %}

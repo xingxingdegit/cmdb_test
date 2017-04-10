@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title> 主机框架 </title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='frame.css') }}">
   </head>
   <script>
       function view(hid) {
@@ -12,10 +12,11 @@
   </script>
 
   <body>
-    <div class="midd_container_left">
-    <table>
-      <form name="search_host" action="{{ url_for('search',filename='host.html') }}" method="get">
-      <tr>
+    <div class="container">
+      <div class="header">
+      <table class="header">
+        <form name="search_host" action="{{ url_for('search',filename='host.html') }}" method="get">
+        <tr>
         <td>服务</td><td><input type="text" name="service"></td>
         <td>主机名</td><td><input type="text" name="hostname"></td>
         <td>IP</td><td><input type="text" name="ip"></td>
@@ -23,8 +24,8 @@
 
         <td rowspan="2"><a href="{{ url_for('add_item',filename='host.html') }}" target="_self"> <input type="button" value="创建主机"></a>
         <td rowspan="2"><input type="button" value="删除主机">
-      </tr>
-      <tr>
+        </tr>
+        <tr>
         <td>机房编号</td><td><input type="text" name="motor"></td>
         <td>所属项目</td><td><input type="text" name="item"></td>
         <td>运行状态</td>  <td>
@@ -33,8 +34,11 @@
           <option value="离线">离线</option>
           <option value="故障">故障</option>
         </select> </td>
-      </form>
-    <table class="midd_table" border="1">
+        </form>
+      </table>
+      </div>
+      <div class="content">
+      <table class="content" border="1">
       <tr>
         <th>ID</th> <th>主机名</th> <th>业务IP</th> <th>数据IP</th> <th>监控IP</th> <th>项目</th> <th>服务</th> <th>系统</th> <th>负责人</th> <th>电话</th> <th>状态</th><th>机房</th>
       </tr>
@@ -56,9 +60,10 @@
       </tr>
       {% endfor %}
     </table>
-    <br><br><hr><br>
-    <table class="page">
-      <tr>
+    </div>
+    <div class="floor">
+      <table class="floor">
+       <tr>
 <!-- page_num 表示是第几个15页，来确定页面中的页数是从15的几倍开始。和开始的页数，结束的页数。比如第一页 // 15 得0,第0个15页，显示的时候会显示1-15的页表  --!>
         {% set page_num = page // 15 %}
         {% if page % 15 != 0 %}
@@ -89,7 +94,8 @@
         {% endif %}
        </tr>
      </table>
-    </div>
+   </div>
+  </div>
 
   </body>
 </html>

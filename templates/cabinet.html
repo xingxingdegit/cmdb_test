@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title> 机柜框架 </title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='frame.css') }}">
     <script>
       function view(cid) {
           window.open('{{ url_for('view_item',filename='cabinet.html') }}?cid=' + cid,target='_self')
@@ -12,8 +12,9 @@
   </head>
 
   <body>
-    <div class="midd_container_left">
-    <table>
+    <div class="container">
+    <div class="header">
+    <table class="header">
       <tr>
       <form name="search_host" action="{{url_for('search',filename='cabinet.html')}}" method="get">
         <td>机房编号</td><td><input type="text" name="motor"></td>
@@ -25,7 +26,10 @@
         <td><a href="{{ url_for('add_item',filename='cabinet.html') }}" target="_self"> <input type="button" value="创建机柜"></a>
         <td><input type="button" value="删除机柜">
       </tr>
-    <table class="midd_table" border="1">
+    </table>
+    </div>
+    <div class="content">
+    <table class="content" border="1">
       <tr>
         <th>ID</th> <th>机柜</th> <th>机房编号</th> <th>第几排</th> <th>第几列</th><th>高度(u)</th>
       </tr>
@@ -41,8 +45,9 @@
       </tr>
      {% endfor %}
     </table>
-    <br><br><hr><br>
-    <table class="page">
+    </div>
+    <div class="floor">
+    <table class="floor">
       <tr>
 <!-- page_num 表示是第几个15页，来确定页面中的页数是从15的几倍开始。和开始的页数，结束的页数。  --!>
         {% set page_num = page // 15 %}
@@ -74,6 +79,7 @@
         {% endif %}
        </tr>
      </table>
+   </div>
    </div>
 
   </body>

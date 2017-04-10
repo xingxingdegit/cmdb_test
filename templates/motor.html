@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title> 机房框架 </title>
-    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='frame.css') }}">
     <script>
       function view(mid) {
           window.open('{{ url_for('view_item',filename='motor.html') }}?mid=' + mid,target='_self')
@@ -12,8 +12,9 @@
   </head>
 
   <body>
-    <div class="midd_container_left">
-    <table>
+    <div class="container">
+    <div class="header">
+    <table class="header">
       <tr>
       <form name="search_motor" action="{{url_for('search',filename='motor.html')}}" method="get">
         <td>机房编号</td><td><input type="text" name="motor"></td>
@@ -26,7 +27,9 @@
         <td><input type="button" value="删除机房">
       </tr>
     </table>
-    <table class="midd_table" border="1">
+    </div>
+    <div class="content">
+    <table class="content" border="1">
       <tr>
         <th>ID</th> <th>机房编号</th> <th>机房名称</th> <th>地址</th> <th>负责人</th> <th>电话</th> <th>机器数量</th> <th>创建日期</th>
       </tr>
@@ -44,8 +47,9 @@
       </tr>
      {% endfor %}
     </table>
-    <br><br><hr><br>
-    <table class="page">
+    </div>
+    <div class="floor">
+      <table class="floor">
         <tr>
 <!-- page_num 表示是第几个15页，来确定页面中的页数是从15的几倍开始。和开始的页数，结束的页数。  --!>
         {% set page_num = page // 15 %}
@@ -78,6 +82,7 @@
         </tr>
      </table>
     </div>
+   </div>
 
   </body>
 </html>
