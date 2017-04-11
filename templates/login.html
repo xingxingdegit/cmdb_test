@@ -1,11 +1,48 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title> flask test the view </title>
+    <meta charset="utf-8">
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="/static/login.css">
   </head>
   <body>
-    <table border='0'>
-      <form name='input' method='post' target="_top">
+  <div class="container">
+   <div class="midd">
+    <table class="left">
+    <form name="logup" action="/logup" method="post">
+    <tr>
+      <th>用户名: </th>
+      <th><input type="text" name="username"></th>
+    </tr>
+    <tr>
+      <th>密码: </th>
+      <th><input type="password" name="password"></th>
+    </tr>
+    <tr>
+      <th>重复密码: </th>
+      <th><input type="password" name="password_again"></th>
+    <tr>
+      <th>部门: </th>
+      <th><input type="text" name="section"></th>
+    </tr>
+    <tr>
+      <th>电话: </th>
+      <th><input type="text" name="phone"></th>
+    </tr>
+    <tr>
+      <th>邮件: </th>
+      <th><input type="text" name="email"></th>
+    </tr>
+    <tr>
+      <th colspan="2"><input type="submit" value="注册"></th>
+    </tr>
+    </form>
+    <tr>
+      <th colspan="2">{{ logup_info }}</th>
+    </tr>
+    </table>
+    <table class="right">
+      <form name='input' action="/login" method='post' target="_top">
       <tr>
           <th>UserName: </th>
           <th><input type='text' name='username'></th>
@@ -19,9 +56,13 @@
       </tr>
       <tr>
       </tr>
-          <th colspan="2">{{info}}</th>
+          <th colspan="2">{{login_info}}</th>
       </form>
     </table>
-    <p><a href="/">首页</a> <a href="/logup">注册</a></p>
-  </body>
+    
+    </div>
+  </div>
+</body>
 </html>
+
+

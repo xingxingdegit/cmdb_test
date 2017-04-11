@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> flask test the view </title>
+  </head>
+  <body>
+    <table border='0'>
+      <form name='input' method='post' target="_top">
+      <tr>
+          <th>UserName: </th>
+          <th><input type='text' name='username'></th>
+      </tr>
+      <tr>
+          <th>Password: </th>
+          <th><input type='password' name='password'></th>
+      </tr>
+      <tr>
+          <th colspan='2'><input type='submit' value='登录'></th>
+      </tr>
+      <tr>
+      </tr>
+          <th colspan="2">{{info}}</th>
+      </form>
+    </table>
+    <p><a href="/">首页</a> <a href="/logup">注册</a></p>
+  </body>
+</html>

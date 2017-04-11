@@ -312,7 +312,7 @@ def login():
             response.location = url_for('index')
             response.status_code = 302
             return response
-    return render_template('login.html',info=info)
+    return render_template('login.html',login_info=info)
 
 @app.route('/logout')
 def logout():
@@ -353,7 +353,7 @@ def logup():
             else: 
                 info = data["username"] + u'创建成功'
 
-    return render_template('logup.html',info=info)
+    return render_template('login.html',logup_info=info)
 
 if __name__ == '__main__':
 #    app.run('0.0.0.0',8000)

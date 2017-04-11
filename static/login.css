@@ -1,0 +1,11 @@
+html,p                {font-family:"宋体",serif,Times;font-size:0.9em;font-weight:800;background-color:#d6d6db;letter-spacing:3px;}
+a                     {text-decoration:none;}
+a:visited,a:link      {color:white;}
+a:hover               {color:red;}
+a.left:visited,a:link      {color:#e8e8e8;display:block;}
+a.left:hover               {width:100%;background:#9999ff;}
+
+div.container             {width:100%;height:800px;}
+div.midd                  {position:absolute;left:22%;top:20%;width:50%;height:30%;}
+table.left                {float:left;height:100%;width:45%;}
+table.right                {float:right;height:100%;width:45%;}
