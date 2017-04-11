@@ -12,7 +12,7 @@ PREFIX = 'dm_'
 
 error_log = '/var/log/dms/error.log'
 
-DEBUG = True
+DEBUG = False
 SECRET_KEY = 'd9yyj/1IZ8ldfb4VKqV8ON+koHY'
 #SECRET_KEY = 'development key'
 #USERNAME = 'admin','star','sst'

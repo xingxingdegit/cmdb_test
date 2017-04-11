@@ -274,6 +274,22 @@ def delete(filename):
        else:
            return str(info)
 
+    elif filename == "motor.html":
+       data = request.values.getlist('motor')
+       status,info = db_sql.delete_motor(g.db,data)
+       if status:
+           return redirect(url_for('motor'))
+       else:
+           return str(info)
+
+    if filename == "cabinet.html":
+       data = request.values.getlist('cid')
+       status,info = db_sql.delete_cabinet(g.db,data)
+       if status != False:
+           return redirect(url_for('cabinet'))
+       else:
+           return str(info)
+
 @app.route('/login',methods=['GET','POST'])
 def login():
     info = ''
@@ -340,5 +356,5 @@ def logup():
     return render_template('logup.html',info=info)
 
 if __name__ == '__main__':
-    app.run('0.0.0.0',8000)
-#    app.run()
+#    app.run('0.0.0.0',8000)
+    app.run()

@@ -368,7 +368,7 @@ def delete_host(conn,data):
 def delete_motor(conn,data):
     sql = 'delete from dm_motor where false'
     for item in data:
-        sql = sql + ' or ' + 'motor=' + item 
+        sql = sql + ' or ' + 'motor=' + "'" + item + "'"
     try:
         cur = conn.cursor()
         cur.execute(sql)
@@ -382,7 +382,7 @@ def delete_motor(conn,data):
 def delete_cabinet(conn,data):
     sql = 'delete from dm_cabinet where false'
     for item in data:
-        sql = sql + ' or ' + 'cabinet=' + item 
+        sql = sql + ' or ' + 'cid=' + "'" + item + "'"
     try:
         cur = conn.cursor()
         cur.execute(sql)

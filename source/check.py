@@ -5,8 +5,8 @@ import time
 from config import config
 
 def check_login(name,conn,ip):
-    if ip == '127.0.0.1':
-        return True
+#    if ip == '127.0.0.1':
+#        return True
     if name:
        pre = config.PREFIX
        nowtime = int(time.time())

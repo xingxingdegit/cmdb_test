@@ -2,13 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title> 机房框架 </title>
+    <title> 搜索机房 </title>
     <link rel="stylesheet" href="{{ url_for('static',filename='frame.css') }}">
-    <script>
-      function view(mid) {
-          window.open('{{ url_for('view_item',filename='motor.html') }}?mid=' + mid,target='_self')
-      }
-    </script>
+    <script src="/static/motor.js" type="text/javascript"></script>
   </head>
 
   <body>
@@ -24,28 +20,34 @@
       </form>
 
         <td><a href="{{ url_for('add_item',filename='motor.html') }}" target="_self"> <input type="button" value="创建机房"></a>
-        <td><input type="button" value="删除机房">
+        <td><input onclick="delete_motor()" type="button" value="删除机房">
       </tr>
     </table>
     </div>
     <div class="content">
     <table class="content" border="1">
       <tr>
-        <th>ID</th> <th>机房编号</th> <th>机房名称</th> <th>地址</th> <th>负责人</th> <th>电话</th> <th>机器数量</th> <th>创建日期</th>
+        <th>操作</th><th>ID</th> <th>机房编号</th> <th>机房名称</th> <th>地址</th> <th>负责人</th> <th>电话</th> <th>机器数量</th> <th>创建日期</th>
       </tr>
-
+      <form name="op_del" id="op_motor" method="post" action="{{url_for('delete',filename='motor.html')}}">
       {% for row in motor_item %}
-      <tr onclick="view('{{row['mid']}}')">
-        <td>{{ row['id'] }}</td>
-        <td>{{ row['motor'].decode('utf-8') }} </td>
-        <td>{{ row['motorname'].decode('utf-8') }} </td>
-        <td>{{ row['address'].decode('utf-8') }}</td>
-        <td>{{ row['admin'].decode('utf-8') }}</td>
-        <td>{{ row['phone'].decode('utf-8') }}</td>     
-        <td>{{ row['motor_host'] }}</td>     
-        <td>{{ row['create_date_str'].decode('utf-8') }}</td>
+      {% if row['id'] % 2 == 0 %}
+        <tr class="color">
+      {% else %}
+        <tr>
+      {% endif %}
+        <td><input type="checkbox" name="motor" value="{{ row['motor'] }}"></td>
+        <td onclick="view('{{row['mid']}}')">{{ row['id'] }}</td>
+        <td onclick="view('{{row['mid']}}')">{{ row['motor'].decode('utf-8') }} </td>
+        <td onclick="view('{{row['mid']}}')">{{ row['motorname'].decode('utf-8') }} </td>
+        <td onclick="view('{{row['mid']}}')">{{ row['address'].decode('utf-8') }}</td>
+        <td onclick="view('{{row['mid']}}')">{{ row['admin'].decode('utf-8') }}</td>
+        <td onclick="view('{{row['mid']}}')">{{ row['phone'].decode('utf-8') }}</td>     
+        <td onclick="view('{{row['mid']}}')">{{ row['motor_host'] }}</td>     
+        <td onclick="view('{{row['mid']}}')">{{ row['create_date_str'].decode('utf-8') }}</td>
       </tr>
      {% endfor %}
+     </form>
     </table>
     </div>
     <div class="floor">
