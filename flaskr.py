@@ -264,7 +264,15 @@ def search(filename):
         else:
             return unicode(pages)
     
-
+@app.route('/delete/<filename>',methods=['POST'])
+def delete(filename):
+    if filename == "host.html":
+       data = request.values.getlist('hostname')
+       status,info = db_sql.delete_host(g.db,data)
+       if status:
+           return redirect(url_for('host'))
+       else:
+           return str(info)
 
 @app.route('/login',methods=['GET','POST'])
 def login():

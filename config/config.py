@@ -3,7 +3,7 @@ DBPORT = '5432'
 DBNAME = 'dms'
 DBUSER = 'dbuser'
 DBPASSWORD = 'abcdefg'
-PAGE_PER = 100
+PAGE_PER = 50
 PAGES = 15
 
 REDIS_HOST = '127.0.0.1'

@@ -350,3 +350,47 @@ def search_cabinet(conn,data,page):
             where = where + ' and ' + key + ' like ' + "'" + '%' + value + '%' + "'"
     data_dict,pages,rows = select_page_cabinet(conn,page,where)
     return data_dict,pages,rows
+
+def delete_host(conn,data):
+    sql = 'delete from dm_host where false'
+    for item in data:
+        sql = sql + ' or ' + 'hostname=' + "'" + item  + "'"
+    try:
+        cur = conn.cursor()
+        cur.execute(sql)
+        conn.commit()
+    except Exception,err:
+        conn.rollback()
+        return False,err.message
+    else:
+        return True,u'成功删除'
+
+def delete_motor(conn,data):
+    sql = 'delete from dm_motor where false'
+    for item in data:
+        sql = sql + ' or ' + 'motor=' + item 
+    try:
+        cur = conn.cursor()
+        cur.execute(sql)
+        conn.commit()
+    except Exception,err:
+        conn.rollback()
+        return False,err.message
+    else:
+        return True,u'成功删除'
+
+def delete_cabinet(conn,data):
+    sql = 'delete from dm_cabinet where false'
+    for item in data:
+        sql = sql + ' or ' + 'cabinet=' + item 
+    try:
+        cur = conn.cursor()
+        cur.execute(sql)
+        conn.commit()
+    except Exception,err:
+        conn.rollback()
+        return False,err.message
+    else:
+        return True,u'成功删除'
+        
+    

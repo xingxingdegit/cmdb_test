@@ -2,14 +2,37 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title> 主机框架 </title>
+    <title> 搜索主机 </title>
     <link rel="stylesheet" href="{{ url_for('static',filename='frame.css') }}">
   </head>
+
   <script>
       function view(hid) {
           window.open('{{ url_for('view_item',filename='host.html') }}?hid=' + hid,target='_self')
       }
+      function delete_host() {
+          var len=document.forms['op_del']['hostname'].length
+          var hostname=document.forms['op_del']['hostname']
+          var info='确认删除主机 '
+          var count=0
+          for (i=0;i<len;i++) {
+              if (hostname[i].checked == true) {
+                  info=info + hostname[i].value
+                  count++
+              }
+          }
+          if (count==0) {
+           alert('请选择要删除的主机')
+          }
+          else {
+              var sta=confirm(info)
+              if (sta==true) {
+                  document.getElementById("op_host").submit();
+              }
+         }
+      }
   </script>
+
 
   <body>
     <div class="container">
@@ -23,7 +46,7 @@
         <td rowspan="2"><input type="submit" value="搜索">
 
         <td rowspan="2"><a href="{{ url_for('add_item',filename='host.html') }}" target="_self"> <input type="button" value="创建主机"></a>
-        <td rowspan="2"><input type="button" value="删除主机">
+        <td rowspan="2"><input onclick="delete_host()" type="button" value="删除主机">
       </tr>
       <tr>
         <td>机房编号</td><td><input type="text" name="motor" value="{{search['motor']}}"></td>
@@ -52,23 +75,29 @@
       <tr>
         <th>ID</th> <th>主机名</th> <th>业务IP</th> <th>数据IP</th> <th>监控IP</th> <th>项目</th> <th>服务</th> <th>系统</th> <th>负责人</th> <th>电话</th> <th>状态</th><th>机房</th>
       </tr>
-
+      <form name="op_del" id="op_host" method="post" action="{{url_for('delete',filename='host.html')}}">
       {% for row in host_item %}
-      <tr onclick="view('{{ row['hid'] }}')">
-        <td>{{ row['id'] }}</td>
-        <td>{{ row['hostname'].decode('utf-8') }} </td>
-        <td>{{ row['service_ip'] }}</td>
-        <td>{{ row['data_ip'] }}</td>     
-        <td>{{ row['monitor_ip'] }}</td>     
-        <td>{{ row['item'].decode('utf-8') }}</td>
-        <td>{{ row['service'].decode('utf-8') }}</td>
-        <td>{{ row['system'].decode('utf-8') }}</td>     
-        <td>{{ row['admin'].decode('utf-8') }}</td>
-        <td>{{ row['phone'].decode('utf-8') }}</td>     
-        <td>{{ row['status'].decode('utf-8') }}</td>
-        <td>{{ row['motor'] }}</td>
+      {% if row['id'] % 2 == 0 %}
+        <tr class="color">
+      {% else %}
+        <tr>
+      {% endif %}
+        <td><input type="checkbox" name="hostname" value="{{ row['hostname'] }}"></td>
+        <td onclick="view('{{ row['hid'] }}')">{{ row['id'] }}</td>
+        <td onclick="view('{{ row['hid'] }}')">{{ row['hostname'].decode('utf-8') }} </td>
+        <td onclick="view('{{ row['hid'] }}')">{{ row['service_ip'] }}</td>
+        <td onclick="view('{{ row['hid'] }}')">{{ row['data_ip'] }}</td>    
+        <td onclick="view('{{ row['hid'] }}')">{{ row['monitor_ip'] }}</td>    
+        <td onclick="view('{{ row['hid'] }}')">{{ row['item'].decode('utf-8') }}</td>
+        <td onclick="view('{{ row['hid'] }}')">{{ row['service'].decode('utf-8') }}</td>
+        <td onclick="view('{{ row['hid'] }}')">{{ row['system'].decode('utf-8') }}</td>    
+        <td onclick="view('{{ row['hid'] }}')">{{ row['admin'].decode('utf-8') }}</td>
+        <td onclick="view('{{ row['hid'] }}')">{{ row['phone'].decode('utf-8') }}</td>    
+        <td onclick="view('{{ row['hid'] }}')">{{ row['status'].decode('utf-8') }}</td>
+        <td onclick="view('{{ row['hid'] }}')">{{ row['motor'] }}</td>
       </tr>
       {% endfor %}
+      </form>
     </table>
     </div>
     <div class="floor">

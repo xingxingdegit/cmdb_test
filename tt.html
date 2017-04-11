@@ -4,32 +4,35 @@
   <meta charset="utf-8">
   <title> 测试js </title>
   <script>
-    once = 1
-    function test(key,value) {
-      var abc = Object()
-      abc.first="yang"
-      abc.last="xingxing"
-      if (abc[key] == value) alert("值相同，不会更新提交")
-      else alert("值发生变化，确认提交")
-    }
-   function tt() {
-     if (once == 1) {
-     document.getElementById("tt").innerHTML='<p><input type="text" value="abcdefg" /></p>'
-     }
-     once ++
-   }
-   function cc(id,value) {
-     document.getElementById(id).innerHTML='<td><input width="200px" type="text" name=' + id + ' value=' + value + ' ></td>';
+   function test_for() {
+       var len=document.forms['op_delete']['hostname'].length
+       var hostname=document.forms['op_delete']['hostname']
+       var host=new Array()
+       var info=''
+       var count=0
+       for (i in host) {
+           info = info + i + ','
+       }
+       alert(info)
+       for (i=0;i<len;i++) {
+           if (hostname[i].checked == true) {
+           
+           }
+       if (host.length == 0) { alert('dd') }
+       }
+       var info='确认删除主机 '
    }
   </script>
     
 </head>
 <body>
-  <p id="demo">这是一个JS函数测试</p>
-  <p><input type="text" name="irst"></p>
-  <p id="abc" onclick="cc('abc',' 浪潮互联网大数据采集中心已经采集超过2PB数据，并已建立5大类数据分类处理算法。近日成功发布海量存储系统的最新代表产品AS130000。+')">点着</p>
+  <form name="op_delete">
+     <input type="checkbox" name="hostname" value="host1">
+     <input type="checkbox" name="hostname" value="host2">
+     <input type="checkbox" name="hostname" value="host3">
+     <input type="radio" name="host" value="host4">
+  </form>
+  <input type="button" onclick="test_for()" value="点一下">
   
-<table>
-<p id="tt" onclick="tt()">abcdefg</p>
 </body>
 </html>
