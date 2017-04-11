@@ -11,38 +11,27 @@
     <div class="container">
       <div class="header">
       <div class="header_left">
-        <table class="header_left">
-        <tr>
-          <td class="userinfo">用户: {{ username }}</td>
-          <td class="userinfo"><a class="one" href="/logout"> 退出登录</a></td>
-        </tr>
-        <tr>
-          <td class="userinfo">状态: {{ status }}</td>
-        </tr>
-        </table>
+        <p>叫什么名呢</p>
       </div>
       <div class="header_right">
       <table class="header_right">
-        <form name="search" action="search" method="post">
         <tr>
-            <td>主机名<input type="checkbox" name="search_item" value="hostname" checked="checked"> </td>
-            <td>IP地址<input type="checkbox" name="search_item" value="ip"></td>
-            <td>项目<input type="checkbox" name="search_item" value="item"></td>
-            <td>机房编号<input type="checkbox" name="search_item" value="motor"></td>
-          </tr>
-          <tr>
-            <td colspan="4"><input class="middle" type="text" name="search_content" cols="35"> <input type="submit" value="搜索"></td>
-          </tr>
-          </form>
-        </table>
-        </div>
-      </div>
+          <td>用户: {{ username }}</td>
+          <td>状态: {{ status }}</td>
+          <td><a class="one"href="/logout"> 退出登录</a></td>
+        </tr>
+       </table>
+       </div>
+     </div>
      <div class="left">
       <table class="left">
-        <tr><td><a href="?frame_id=host">主机管理</a></td></tr>
-        <tr><td><a href="?frame_id=motor">机房管理</a></td>
-        <tr><td><a href="?frame_id=cabinet">机柜管理</a></td></tr>
-        <tr><td><a href="?frame_id=user">用户管理</a></td></tr>
+        <tr>
+          <td><img src="/static/head.jpg" white></td>
+        </tr>
+        <tr><td><a class="left" href="?frame_id=host">主机管理</a></td></tr>
+        <tr><td><a class="left" href="?frame_id=motor">机房管理</a></td>
+        <tr><td><a class="left" href="?frame_id=cabinet">机柜管理</a></td></tr>
+        <tr><td><a class="left" href="?frame_id=user">用户管理</a></td></tr>
       </table>
       </div>
     <div class="midd">

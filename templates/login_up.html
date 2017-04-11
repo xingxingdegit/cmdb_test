@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>登录</title>
+  </head>
+  <br>
+  <hr>
+  <table>
+    <form name="logup" action="/logup" method="post">
+    <tr>
+      <th>用户名: </th>
+      <th><input type="text" name="username"></th>
+    </tr>
+    <tr>
+      <th>密码: </th>
+      <th><input type="password" name="password"></th>
+    </tr>
+    <tr>
+      <th>重复密码: </th>
+      <th><input type="password" name="password_again"></th>
+    <tr>
+      <th>部门: </th>
+      <th><input type="text" name="section"></th>
+    </tr>
+    <tr>
+      <th>电话: </th>
+      <th><input type="text" name="phone"></th>
+    </tr>
+    <tr>
+      <th>邮件: </th>
+      <th><input type="text" name="email"></th>
+    </tr>
+    <tr>
+      <th colspan="2"><input type="submit" value="提交"></th>
+    <form>
+    <tr>
+      <th colspan="2">{{ info }}</th>
+    </tr>
+  </table>
+  <p><a href="/">首页 </a> <a href="/login"> 登录 </a> </p>
+</html>
+
+
