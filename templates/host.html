@@ -44,7 +44,11 @@
       </tr>
 
       {% for row in host_item %}
-      <tr onclick="view('{{ row['hid'] }}')">
+      {% if row['id'] % 2 == 0 %}
+        <tr class="color" onclick="view('{{ row['hid'] }}')">
+      {% else %}
+        <tr onclick="view('{{ row['hid'] }}')">
+      {% endif %}
         <td>{{ row['id'] }}</td>
         <td>{{ row['hostname'].decode('utf-8') }} </td>
         <td>{{ row['service_ip'] }}</td>

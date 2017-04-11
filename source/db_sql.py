@@ -323,6 +323,10 @@ def search_host(conn,data,page):
         if value.strip():
             where = where + ' and ' + key + '=' + "'" + value + "'"
 #            where = where + ' and ' + key + ' like ' + "'" + '%' + value + '%' + "'"
+    #浏览器搜索完以后，搜索栏还会显示搜索条件，是由服务端回传回去的，所以data字典中的内容不能变，把ip再加回去。
+    try:
+        data['ip'] = ip
+    except: pass
     data_dict,pages,rows = select_page_host(conn,page,where)
     return data_dict,pages,rows
 
